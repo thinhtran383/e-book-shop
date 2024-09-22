@@ -16,6 +16,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Entity
 @Table(name = "Customers", schema = "book_shop")
+@ToString
 public class Customer {
     @Id
     @Column(name = "CustomerID", nullable = false)
@@ -41,5 +42,13 @@ public class Customer {
 
     @Column(name = "CreatedDate")
     private LocalDate createdDate;
+
+
+    @PrePersist
+    public void prePersist(){
+        this.id = (int) (Math.random() * 1000);
+
+        createdDate = LocalDate.now();
+    }
 
 }
