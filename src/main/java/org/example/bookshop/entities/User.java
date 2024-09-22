@@ -42,18 +42,23 @@ public class User implements UserDetails {
     private String email;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "RoleID", nullable = false)
     private Role role;
 
-    @OneToMany(mappedBy = "userID")
+    @OneToMany(mappedBy = "userID", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Customer> customers = new LinkedHashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
         return List.of(new SimpleGrantedAuthority(getRole().getRoleName()));
+    }
+
+    @PrePersist
+    public void prePersist(){
+        this.id = (int) (Math.random() * 1000);
     }
 
     @Override
