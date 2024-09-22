@@ -1,17 +1,18 @@
 package org.example.bookshop.responses;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class PageableResponse<T> extends Response<T> {
-    private List<T> data;
+@Getter
+@Setter
+@SuperBuilder
+public class PageableResponse<T>{
+    private List<T> elements;
     private int totalPages;
     private long totalElements;
 }

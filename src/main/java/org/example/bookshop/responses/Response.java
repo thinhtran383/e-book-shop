@@ -1,13 +1,14 @@
 package org.example.bookshop.responses;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
+@Getter
+@Setter
 public class Response <T> {
     private T data;
     private String message;
