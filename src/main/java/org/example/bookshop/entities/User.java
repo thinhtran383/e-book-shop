@@ -11,7 +11,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -44,6 +46,9 @@ public class User implements UserDetails {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "RoleID", nullable = false)
     private Role role;
+
+    @OneToMany(mappedBy = "userID")
+    private Set<Customer> customers = new LinkedHashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
