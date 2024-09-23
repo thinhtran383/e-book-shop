@@ -53,5 +53,13 @@ public class GlobalExceptionHandler {
         return errors;
     }
 
+    @ExceptionHandler(ResourceAlreadyExisted.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public Map<String, String> handleResourceAlreadyExisted(ResourceAlreadyExisted ex) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("error", ex.getMessage());
+        return errors;
+    }
+
 
 }
