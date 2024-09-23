@@ -50,7 +50,7 @@ public class AuthService {
         Customer customer = modelMapper.map(registerDto, Customer.class);
         customer.setUserID(user);
 
-        user.getCustomers().add(customer);
+        user.setCustomer(customer);
 
         userRepository.save(user);
 
@@ -67,10 +67,10 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public LoginResponse adminLogin(LoginDto loginDto) {
-        User user = userRepository.findByUsername(loginDto.getUsername())
+        User user = userRepository.findByUsername(loginDto.getUsername()) //
                 .orElseThrow(() -> new DataNotFoundException("User not found"));
 
-        if(user.getRole().getId() != 2) {
+        if(user.getRole().getId() != 2) { //
             throw new BadCredentialsException("You are not have permission to access this page");
         }
 
@@ -78,8 +78,7 @@ public class AuthService {
     }
 
     private LoginResponse doLogin(LoginDto loginDto, User user) {
-        Customer customer = customerRepository.findByUserID(user)
-                .orElseThrow(() -> new DataNotFoundException("Customer not found"));
+        Customer customer = user.getCustomer();
 
         if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("Invalid password");
