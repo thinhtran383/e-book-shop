@@ -1,9 +1,6 @@
 package org.example.bookshop.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -24,5 +21,10 @@ public class Category {
     @NotNull
     @Column(name = "CategoryName", nullable = false)
     private String categoryName;
+
+    @PrePersist
+    public void prePersist() {
+        this.id = (int) (Math.random() * 10000);
+    }
 
 }
