@@ -22,10 +22,8 @@ public class Customer {
     @Column(name = "CustomerID", nullable = false)
     private Integer id;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "UserID", nullable = false)
+    @OneToOne
+    @JoinColumn(name = "userID", nullable = false)
     private User userID;
 
     @Size(max = 255)

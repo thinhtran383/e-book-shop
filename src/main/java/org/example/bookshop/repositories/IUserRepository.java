@@ -1,6 +1,7 @@
 package org.example.bookshop.repositories;
 
 import org.example.bookshop.entities.User;
+import org.example.bookshop.responses.users.LoginResponse;
 import org.example.bookshop.responses.users.UserResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,9 +17,13 @@ public interface IUserRepository extends JpaRepository<User, Integer> {
     Optional<User> findByUsername(String username);
 
     @Query("SELECT new org.example.bookshop.responses.users.UserResponse(u.id, u.username, u.email, c.fullName, c.phone, c.address) " +
-            "FROM User u JOIN u.customers c JOIN u.role r " +
+            "FROM User u JOIN u.customer c JOIN u.role r " +
             "WHERE r.roleName = 'customer'")
     Page<UserResponse> findAllUserDetails(Pageable pageable);
 
 
+//    @Query("select new org.example.bookshop.responses.users.LoginResponse(u.username, c.fullName, u.email, c.address, c.phone, r.roleName)" +
+//            "from User u join u.customers c join u.role r" +
+//            " where u.username = :username")
+//    Optional<LoginResponse> findUserWithCustomerDetails(@Param("username") String username);
 }

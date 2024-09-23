@@ -47,8 +47,8 @@ public class User implements UserDetails {
     @JoinColumn(name = "RoleID", nullable = false)
     private Role role;
 
-    @OneToMany(mappedBy = "userID", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Customer> customers = new LinkedHashSet<>();
+    @OneToOne(mappedBy = "userID", cascade = CascadeType.ALL, optional = false)
+    private Customer customer;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
