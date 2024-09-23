@@ -8,13 +8,13 @@ import org.example.bookshop.entities.Customer;
 import org.example.bookshop.entities.Role;
 import org.example.bookshop.entities.User;
 import org.example.bookshop.exceptions.DataNotFoundException;
+import org.example.bookshop.exceptions.ResourceAlreadyExisted;
 import org.example.bookshop.repositories.ICustomerRepository;
 import org.example.bookshop.repositories.IRoleRepository;
 import org.example.bookshop.repositories.IUserRepository;
 import org.example.bookshop.responses.users.LoginResponse;
 import org.example.bookshop.utils.JwtGenerator;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.config.CustomEditorConfigurer;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,8 +22,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -40,12 +38,27 @@ public class AuthService {
 
     @Transactional
     public RegisterDto register(RegisterDto registerDto) {
+        User existUser = userRepository.findByUsername(registerDto.getUsername()).orElse(null);
+
+        if (existUser != null) {
+            if (existUser.getEmail() != null && existUser.getEmail().equals(registerDto.getEmail())) {
+                throw new ResourceAlreadyExisted("Email already existed");
+            }
+
+            if (existUser.getCustomer() != null && existUser.getCustomer().getPhone() != null &&
+                    existUser.getCustomer().getPhone().equals(registerDto.getPhone())) {
+                throw new ResourceAlreadyExisted("Phone number already existed");
+            }
+
+            throw new ResourceAlreadyExisted("Username already existed");
+        }
+
+
         User user = modelMapper.map(registerDto, User.class);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        Role role = roleRepository.findById(1)
-                .orElseThrow(() -> new RuntimeException("Role not found"));
-        user.setRole(role);
+
+        user.setRole(new Role(1, "customer"));
 
         Customer customer = modelMapper.map(registerDto, Customer.class);
         customer.setUserID(user);
@@ -56,6 +69,7 @@ public class AuthService {
 
         return registerDto;
     }
+
 
     @Transactional(readOnly = true)
     public LoginResponse login(LoginDto loginDto) {
