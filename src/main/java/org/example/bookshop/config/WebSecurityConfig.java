@@ -2,10 +2,12 @@ package org.example.bookshop.config;
 
 import lombok.RequiredArgsConstructor;
 import org.example.bookshop.filter.JwtFilter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -18,7 +20,10 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @RequiredArgsConstructor
 @EnableWebSecurity
 @EnableWebMvc
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
+    @Value("${api.base-path}")
+    private String apiPrefix;
     private final AuthenticationProvider authenticationProvider;
     private final JwtFilter jwtFilter;
 
@@ -46,6 +51,8 @@ public class WebSecurityConfig {
 //                                            "/swagger-ui/**",
 //                                            "/swagger-ui.html"
 //                                    )
+//                                    .permitAll();
+//                            requests.requestMatchers(String.format("%s/auth", apiPrefix))
 //                                    .permitAll();
 //                        }
 //                )
