@@ -9,6 +9,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Random;
 
 @Getter
 @Setter
@@ -61,5 +62,10 @@ public class Book {
 
     @Column(name = "AverageRating", precision = 2, scale = 1)
     private BigDecimal averageRating;
+
+    @PrePersist
+    public void prePersist() {
+        this.id = (int) (Math.random() * 1000);
+    }
 
 }
