@@ -5,8 +5,10 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.cglib.core.Local;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -39,6 +41,6 @@ public class Comment {
 
     @NotNull
     @Column(name = "CommentDate", nullable = false)
-    private Instant commentDate;
+    private LocalDateTime commentDate;
 
 }
