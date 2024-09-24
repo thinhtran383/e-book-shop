@@ -1,10 +1,10 @@
 package org.example.bookshop.responses.comment;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -22,7 +22,5 @@ public class CommentResponse {
     private LocalDateTime createdAt;
 
     private int rating;
-
-    private BigDecimal averageRating;
 
 }

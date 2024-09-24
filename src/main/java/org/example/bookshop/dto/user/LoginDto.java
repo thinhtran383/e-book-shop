@@ -1,4 +1,4 @@
-package org.example.bookshop.dto;
+package org.example.bookshop.dto.user;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;

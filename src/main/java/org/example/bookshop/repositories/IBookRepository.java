@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -38,4 +39,8 @@ public interface IBookRepository extends JpaRepository<Book, Integer>, JpaSpecif
     Page<BookResponse> findAllBook(Pageable pageable);
 
     Page<Book> findBooksByCategoryID(Category categoryID, Pageable pageable);
+
+    @Query("SELECT b.averageRating FROM Book b WHERE b.id = :bookID")
+    BigDecimal getAverageRatingById(@Param("bookID") Integer bookID);
+
 }

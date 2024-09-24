@@ -2,8 +2,8 @@ package org.example.bookshop.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.bookshop.dto.LoginDto;
-import org.example.bookshop.dto.RegisterDto;
+import org.example.bookshop.dto.user.LoginDto;
+import org.example.bookshop.dto.user.RegisterDto;
 import org.example.bookshop.entities.Customer;
 import org.example.bookshop.entities.Role;
 import org.example.bookshop.entities.User;
@@ -18,9 +18,14 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Map;
 
 
 @Service
@@ -84,7 +89,7 @@ public class AuthService {
         User user = userRepository.findByUsername(loginDto.getUsername()) //
                 .orElseThrow(() -> new DataNotFoundException("User not found"));
 
-        if(user.getRole().getId() != 2) { //
+        if (user.getRole().getId() != 2) { //
             throw new BadCredentialsException("You are not have permission to access this page");
         }
 
@@ -116,6 +121,20 @@ public class AuthService {
                 .address(customer.getAddress())
                 .phone(customer.getPhone())
                 .build();
+    }
+
+    public String getCurrentRequestUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        System.out.println(authentication);
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            Object principal = authentication.getPrincipal();
+
+            System.out.println(principal);
+        }
+
+        return null;
     }
 
 

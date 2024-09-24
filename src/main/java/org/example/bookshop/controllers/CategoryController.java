@@ -1,7 +1,7 @@
 package org.example.bookshop.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.example.bookshop.dto.CategoryDto;
+import org.example.bookshop.dto.category.CategoryDto;
 import org.example.bookshop.responses.PageableResponse;
 import org.example.bookshop.responses.Response;
 import org.example.bookshop.responses.category.CategoriesResponse;
