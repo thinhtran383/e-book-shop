@@ -1,7 +1,7 @@
 package org.example.bookshop.services;
 
 import lombok.RequiredArgsConstructor;
-import org.example.bookshop.dto.BookDto;
+import org.example.bookshop.dto.book.BookDto;
 import org.example.bookshop.entities.Book;
 import org.example.bookshop.entities.Category;
 import org.example.bookshop.exceptions.DataNotFoundException;
@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
 
@@ -108,5 +107,17 @@ public class BookService {
         return bookRepository.findAll(spec, pageable).map(book -> modelMapper.map(book, BookResponse.class));
     }
 
+    @Transactional(readOnly = true)
+    public BigDecimal getAverageRatingById(Integer bookID) {
+        return bookRepository.getAverageRatingById(bookID);
+    }
 
+    @Transactional(readOnly = true)
+    public BookResponse getBookById(Integer bookID) {
+        Book book = bookRepository.findById(bookID).orElseThrow(
+                () -> new DataNotFoundException("Book not found")
+        );
+
+        return modelMapper.map(book, BookResponse.class);
+    }
 }

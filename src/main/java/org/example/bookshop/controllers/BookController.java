@@ -1,7 +1,9 @@
 package org.example.bookshop.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.example.bookshop.dto.BookDto;
+import lombok.extern.slf4j.Slf4j;
+import org.example.bookshop.dto.book.BookDto;
+import org.example.bookshop.entities.User;
 import org.example.bookshop.responses.PageableResponse;
 import org.example.bookshop.responses.Response;
 import org.example.bookshop.responses.book.BookResponse;
@@ -11,30 +13,30 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("${api.base-path}/books")
+@Slf4j
 public class BookController {
 
     private final BookService bookService;
     private final CloudinaryService cloudinaryService;
 
 
-
     @PostMapping(value = "/upload", consumes = {"multipart/form-data"})
     public Mono<ResponseEntity<Response<String>>> uploadImage(
             @RequestParam("file") MultipartFile file
     ) {
-
 
 
         return cloudinaryService.uploadFile(file)
@@ -45,12 +47,24 @@ public class BookController {
 
     }
 
+    @GetMapping("/details/{bookID}")
+    public ResponseEntity<Response<BookResponse>> getBookByID(
+            @PathVariable int bookID
+    ) {
+        return ResponseEntity.ok(Response.<BookResponse>builder()
+                .data(bookService.getBookById(bookID))
+                .message("Success")
+                .build()
+        );
+    }
 
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     public ResponseEntity<Response<PageableResponse<BookResponse>>> getAllBooks(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int limit
-    ) {
+
+            ) {
         Pageable pageable = org.springframework.data.domain.PageRequest.of(page, limit);
 
         org.springframework.data.domain.Page<BookResponse> bookPage = bookService.getAllBooks(pageable);
@@ -60,6 +74,7 @@ public class BookController {
                 .totalElements(bookPage.getTotalElements())
                 .elements(bookPage.getContent())
                 .build();
+
 
         return ResponseEntity.ok(Response.<PageableResponse<BookResponse>>builder()
                 .data(response)

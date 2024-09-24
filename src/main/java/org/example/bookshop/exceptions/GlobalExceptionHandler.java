@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DataNotFoundException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handleDataNotFoundException(DataNotFoundException ex) {
         Map<String, String> errors = new HashMap<>();
         errors.put("error", ex.getMessage());
@@ -54,7 +54,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ResourceAlreadyExisted.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(HttpStatus.CONFLICT)
     public Map<String, String> handleResourceAlreadyExisted(ResourceAlreadyExisted ex) {
         Map<String, String> errors = new HashMap<>();
         errors.put("error", ex.getMessage());

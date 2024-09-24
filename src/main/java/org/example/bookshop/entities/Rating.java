@@ -7,6 +7,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -38,6 +39,11 @@ public class Rating {
 
     @NotNull
     @Column(name = "RatingDate", nullable = false)
-    private Instant ratingDate;
+    private LocalDateTime ratingDate;
+
+    @PrePersist
+    public void prePersist() {
+        this.id = (int) (Math.random() * 1000000);
+    }
 
 }

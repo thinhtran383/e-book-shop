@@ -43,4 +43,9 @@ public class Comment {
     @Column(name = "CommentDate", nullable = false)
     private LocalDateTime commentDate;
 
+    @PrePersist
+    public void prePersist() {
+        this.id = (int) (Math.random() * 1000000);
+    }
+
 }

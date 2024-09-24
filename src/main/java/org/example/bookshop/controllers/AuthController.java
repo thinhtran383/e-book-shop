@@ -2,17 +2,20 @@ package org.example.bookshop.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
-import org.example.bookshop.dto.LoginDto;
-import org.example.bookshop.dto.RegisterDto;
+import org.example.bookshop.dto.user.LoginDto;
+import org.example.bookshop.dto.user.RegisterDto;
 import org.example.bookshop.responses.Response;
 import org.example.bookshop.responses.users.LoginResponse;
 import org.example.bookshop.services.AuthService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 
 @RestController
@@ -50,6 +53,11 @@ public class AuthController {
                 .data(authService.adminLogin(loginDto))
                 .message("Admin logged in successfully")
                 .build());
+    }
+
+    @PostMapping("/currentUser")
+    public ResponseEntity<String> currentUser(@AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(userDetails.getUsername());
     }
 
 

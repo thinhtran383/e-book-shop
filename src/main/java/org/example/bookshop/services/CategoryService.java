@@ -1,7 +1,7 @@
 package org.example.bookshop.services;
 
 import lombok.RequiredArgsConstructor;
-import org.example.bookshop.dto.CategoryDto;
+import org.example.bookshop.dto.category.CategoryDto;
 import org.example.bookshop.entities.Category;
 import org.example.bookshop.repositories.ICategoryRepository;
 import org.example.bookshop.responses.category.CategoriesResponse;

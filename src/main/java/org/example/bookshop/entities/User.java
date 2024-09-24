@@ -42,7 +42,7 @@ public class User implements UserDetails {
     private String email;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "RoleID", nullable = false)
     private Role role;
@@ -53,7 +53,7 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        return List.of(new SimpleGrantedAuthority(getRole().getRoleName()));
+        return List.of(new SimpleGrantedAuthority("ROLE_"+getRole().getRoleName().toUpperCase()));
     }
 
     @PrePersist

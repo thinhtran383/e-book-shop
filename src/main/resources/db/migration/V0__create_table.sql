@@ -89,6 +89,5 @@ CREATE TABLE Ratings (
                          Rating INT NOT NULL CHECK (Rating >= 1 AND Rating <= 5),
                          RatingDate DATETIME NOT NULL,
                          CONSTRAINT FK_Rating_User FOREIGN KEY (UserID) REFERENCES Users(UserID) ON DELETE CASCADE,
-                         CONSTRAINT FK_Rating_Book FOREIGN KEY (BookID) REFERENCES Books(BookID) ON DELETE CASCADE,
-                         CONSTRAINT UQ_Rating UNIQUE (UserID, BookID) -- Mỗi người dùng chỉ có thể đánh giá một lần cho mỗi sách
+                         CONSTRAINT FK_Rating_Book FOREIGN KEY (BookID) REFERENCES Books(BookID) ON DELETE CASCADE
 );

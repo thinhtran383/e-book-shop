@@ -1,4 +1,4 @@
-package org.example.bookshop.dto;
+package org.example.bookshop.dto.category;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

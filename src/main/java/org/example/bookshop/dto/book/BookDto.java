@@ -1,4 +1,4 @@
-package org.example.bookshop.dto;
+package org.example.bookshop.dto.book;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
