@@ -9,7 +9,9 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
 import java.util.Random;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -62,6 +64,10 @@ public class Book {
 
     @Column(name = "AverageRating", precision = 2, scale = 1)
     private BigDecimal averageRating;
+
+    @OneToMany(mappedBy = "bookID")
+    private Set<Rating> ratings = new LinkedHashSet<>();
+
 
     @PrePersist
     public void prePersist() {
