@@ -2,6 +2,7 @@ package org.example.bookshop.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.bookshop.dto.mail.MailDto;
 import org.example.bookshop.dto.user.ChangePassDto;
 import org.example.bookshop.dto.user.LoginDto;
 import org.example.bookshop.dto.user.RegisterDto;
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
+import java.util.UUID;
 
 
 @Service
@@ -41,6 +43,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtGenerator jwtGenerator;
+    private final MailService mailService;
 
 
     @Transactional
@@ -125,19 +128,6 @@ public class AuthService {
                 .build();
     }
 
-    public String getCurrentRequestUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        System.out.println(authentication);
-
-        if (authentication != null && authentication.isAuthenticated()) {
-            Object principal = authentication.getPrincipal();
-
-            System.out.println(principal);
-        }
-
-        return null;
-    }
 
     @Transactional
     public LoginResponse changePassword(ChangePassDto changePassDto, Integer userId) {
@@ -154,7 +144,6 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(changePassDto.getNewPassword()));
 
 
-
         return LoginResponse.builder()
                 .token(jwtGenerator.generateToken(user))
                 .phone(user.getCustomer().getPhone())
@@ -166,5 +155,22 @@ public class AuthService {
 
     }
 
+    @Transactional
+    public void forgotPassword(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new DataNotFoundException("Email not found"));
+
+
+        String newPassword = UUID.randomUUID().toString().substring(0, 8);
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        MailDto mailDto = MailDto.builder()
+                .subject("Forgot password")
+                .message(newPassword)
+                .to(user.getEmail())
+                .build();
+
+        mailService.sendMail(mailDto);
+    }
 
 }
