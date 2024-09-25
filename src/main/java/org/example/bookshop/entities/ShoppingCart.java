@@ -13,6 +13,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @NoArgsConstructor
 @Entity
 @Table(name = "ShoppingCart", schema = "book_shop")
+@ToString
 public class ShoppingCart {
     @Id
     @Column(name = "CartID", nullable = false)
@@ -21,13 +22,15 @@ public class ShoppingCart {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "UserID", nullable = false)
+    @JoinColumn(name = "UserID", nullable = false, updatable = false)
+    @ToString.Exclude
     private User userID;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "BookID", nullable = false)
+    @ToString.Exclude
     private Book bookID;
 
     @NotNull

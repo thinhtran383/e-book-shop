@@ -33,7 +33,8 @@ public class CommentController {
     public ResponseEntity<Map<String, Object>> getCommentAndRatingByBookId(
             @PathVariable Integer bookId,
             @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "10") Integer limit
+            @RequestParam(defaultValue = "10") Integer limit,
+            @AuthenticationPrincipal User userDetails
     ) {
         Pageable pageable = PageRequest.of(page, limit, Sort.by("commentDate").descending());
 
@@ -51,6 +52,7 @@ public class CommentController {
         Map<String, Object> response = Map.of(
                 "data", pageableResponse,
                 "averageRating", averageRating,
+                "enableComment", commentService.isEnableComment(bookId, userDetails.getId()),
                 "detailRating", commentService.calculateRatingPercentage(bookId),
                 "message", "Get comment and rating by book id success");
 
