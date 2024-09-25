@@ -53,11 +53,11 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
-        return List.of(new SimpleGrantedAuthority("ROLE_"+getRole().getRoleName().toUpperCase()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + getRole().getRoleName().toUpperCase()));
     }
 
     @PrePersist
-    public void prePersist(){
+    public void prePersist() {
         this.id = (int) (Math.random() * 1000);
     }
 

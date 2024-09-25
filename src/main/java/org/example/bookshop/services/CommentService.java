@@ -64,6 +64,14 @@ public class CommentService {
         bookRepository.save(book);
     }
 
+    @Transactional(readOnly = true)
+    public boolean isEnableComment(Integer bookID, Integer userID) {
+        long count = orderDetailRepository.countBooksPurchasedByUser(userID, bookID);
+        boolean existed = commentRepository.existsByUserID_IdAndBookID_Id(userID, bookID);
+
+        return count > 0 && !existed;
+
+    }
 
     @Transactional
     public Map<String, Object> saveComment(CommentDto commentDto) {

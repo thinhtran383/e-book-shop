@@ -34,5 +34,7 @@ public interface ICommentRepository extends JpaRepository<Comment, Integer> {
     @Query("SELECT c FROM Comment c WHERE c.userID.id = :userId AND c.bookID.id = :bookId ORDER BY c.commentDate DESC limit 1")
     Optional<Comment> findMostRecentCommentByUserAndBook(@Param("userId") int userId, @Param("bookId") int bookId);
 
+    boolean existsByUserID_IdAndBookID_Id(int userId, int bookId);
+
 
 }

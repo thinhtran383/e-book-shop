@@ -1,11 +1,13 @@
 package org.example.bookshop.controllers;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.bookshop.entities.User;
 import org.example.bookshop.responses.PageableResponse;
 import org.example.bookshop.responses.Response;
 import org.example.bookshop.responses.users.UserResponse;
 import org.example.bookshop.services.UserService;
+import org.example.bookshop.utils.Exporter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -42,6 +45,25 @@ public class UserController {
                 .data(response)
                 .message("Success")
                 .build());
+
+
+    }
+
+    @GetMapping("/export/excel")
+    public void exportCustomerToExcel(HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=users.xlsx";
+        response.setHeader(headerKey, headerValue);
+
+        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
+
+        Page<UserResponse> userPage = userService.getAllUsers(pageable);
+
+        Exporter<UserResponse> exporter = new Exporter<>(userPage.getContent(), "Users");
+
+        exporter.export(response);
 
 
     }

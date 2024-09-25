@@ -1,16 +1,20 @@
 package org.example.bookshop.controllers;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.bookshop.dto.category.CategoryDto;
 import org.example.bookshop.responses.PageableResponse;
 import org.example.bookshop.responses.Response;
 import org.example.bookshop.responses.category.CategoriesResponse;
 import org.example.bookshop.services.CategoryService;
+import org.example.bookshop.utils.Exporter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("${api.base-path}/categories")
@@ -38,6 +42,25 @@ public class CategoryController {
                 .data(response)
                 .message("Get all categories success")
                 .build());
+    }
+
+    @GetMapping("/export/excel")
+    public void exportCategoriesToExcel(HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=categories.xlsx";
+        response.setHeader(headerKey, headerValue);
+
+        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
+
+        Page<CategoriesResponse> categoriesResponses = categoryService.getAllCategories(pageable);
+
+        Exporter<CategoriesResponse> exporter = new Exporter<>(categoriesResponses.getContent(), "Categories");
+
+        exporter.export(response);
+
+
     }
 
     @PostMapping
