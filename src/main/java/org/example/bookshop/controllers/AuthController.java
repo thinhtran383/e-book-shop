@@ -2,8 +2,10 @@ package org.example.bookshop.controllers;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.example.bookshop.dto.user.ChangePassDto;
 import org.example.bookshop.dto.user.LoginDto;
 import org.example.bookshop.dto.user.RegisterDto;
+import org.example.bookshop.entities.User;
 import org.example.bookshop.responses.Response;
 import org.example.bookshop.responses.users.LoginResponse;
 import org.example.bookshop.services.AuthService;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
 
 
 @RestController
@@ -23,7 +24,6 @@ import java.util.Map;
 @RequestMapping("${api.base-path}/auth")
 public class AuthController {
     private final AuthService authService;
-
 
     @PostMapping("/register")
     public ResponseEntity<Response<RegisterDto>> register(
@@ -58,6 +58,17 @@ public class AuthController {
     @PostMapping("/currentUser")
     public ResponseEntity<String> currentUser(@AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(userDetails.getUsername());
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<Response<LoginResponse>> changePassword(
+            @AuthenticationPrincipal User user,
+            @RequestBody ChangePassDto changePassDto
+    ) {
+        return ResponseEntity.ok(Response.<LoginResponse>builder()
+                .data(authService.changePassword(changePassDto, user.getId()))
+                .message("Password changed successfully")
+                .build());
     }
 
 
