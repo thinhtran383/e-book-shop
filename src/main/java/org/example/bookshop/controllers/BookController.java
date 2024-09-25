@@ -1,5 +1,6 @@
 package org.example.bookshop.controllers;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.bookshop.dto.book.BookDto;
@@ -33,6 +34,7 @@ public class BookController {
     private final CloudinaryService cloudinaryService;
 
 
+    @Hidden
     @PostMapping(value = "/upload", consumes = {"multipart/form-data"})
     public Mono<ResponseEntity<Response<String>>> uploadImage(
             @RequestParam("file") MultipartFile file
