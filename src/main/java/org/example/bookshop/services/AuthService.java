@@ -2,6 +2,7 @@ package org.example.bookshop.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.bookshop.dto.user.ChangePassDto;
 import org.example.bookshop.dto.user.LoginDto;
 import org.example.bookshop.dto.user.RegisterDto;
 import org.example.bookshop.entities.Customer;
@@ -13,6 +14,7 @@ import org.example.bookshop.repositories.ICustomerRepository;
 import org.example.bookshop.repositories.IRoleRepository;
 import org.example.bookshop.repositories.IUserRepository;
 import org.example.bookshop.responses.users.LoginResponse;
+import org.example.bookshop.responses.users.UserResponse;
 import org.example.bookshop.utils.JwtGenerator;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -135,6 +137,33 @@ public class AuthService {
         }
 
         return null;
+    }
+
+    @Transactional
+    public LoginResponse changePassword(ChangePassDto changePassDto, Integer userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new DataNotFoundException("User not found"));
+
+        if (!passwordEncoder.matches(changePassDto.getOldPassword(), user.getPassword())) {
+            throw new BadCredentialsException("Invalid password");
+        }
+
+        if (!changePassDto.getNewPassword().equals(changePassDto.getConfirmPassword())) {
+            throw new BadCredentialsException("Confirm password not match");
+        }
+
+        user.setPassword(passwordEncoder.encode(changePassDto.getNewPassword()));
+
+
+
+        return LoginResponse.builder()
+                .token(jwtGenerator.generateToken(user))
+                .phone(user.getCustomer().getPhone())
+                .address(user.getCustomer().getAddress())
+                .username(user.getUsername())
+                .fullName(user.getCustomer().getFullName())
+                .email(user.getEmail())
+                .build();
+
     }
 
 
