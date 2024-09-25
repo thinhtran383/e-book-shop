@@ -32,15 +32,5 @@ public class HomeController {
                 .build());
     }
 
-    @PostMapping("/send-mail")
-    public ResponseEntity<Response<String>> sendMail(
-            @RequestBody MailDto mailDto
-    ) {
-        mailService.sendMail(mailDto.getTo(), mailDto);
 
-         return ResponseEntity.ok(Response.<String>builder()
-                .data("Send mail to `" + mailDto.getTo() + "`")
-                .message("Success")
-                .build());
-    }
 }
