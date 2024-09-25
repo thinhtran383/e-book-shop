@@ -34,30 +34,32 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-//                .authorizeHttpRequests(
-//                        requests -> {
-//                            requests
-//                                    .requestMatchers(
-//                                            // swagger
-//                                            "/swagger-ui/**",
-//                                            "/v3/api-docs/",
-//                                            "/v3/api-docs/**",
-//                                            "/api-docs",
-//                                            "/api-docs/**",
-//                                            "/swagger-resources",
-//                                            "/swagger-resources/**",
-//                                            "/configuration/ui",
-//                                            "/configuration/security",
-//                                            "/swagger-ui/**",
-//                                            "/swagger-ui.html"
-//                                    )
-//                                    .permitAll();
-//                            requests.requestMatchers(String.format("%s/auth/**", apiPrefix))
-//                                    .permitAll();
-//                        }
-//                )
-//                .authorizeHttpRequests(requests -> requests.anyRequest().authenticated())
-                .authorizeHttpRequests(requests -> requests.anyRequest().permitAll())
+                .authorizeHttpRequests(
+                        requests -> {
+                            requests
+                                    .requestMatchers(
+                                            // swagger
+                                            "/swagger-ui/**",
+                                            "/v3/api-docs/",
+                                            "/v3/api-docs/**",
+                                            "/api-docs",
+                                            "/api-docs/**",
+                                            "/swagger-resources",
+                                            "/swagger-resources/**",
+                                            "/configuration/ui",
+                                            "/configuration/security",
+                                            "/swagger-ui/**",
+                                            "/swagger-ui.html",
+
+                                            "/home/**",
+                                            "/home"
+                                    )
+                                    .permitAll();
+                            requests.requestMatchers(String.format("%s/auth/**", apiPrefix))
+                                    .permitAll();
+                        }
+                )
+                .authorizeHttpRequests(requests -> requests.anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider);
 
 
