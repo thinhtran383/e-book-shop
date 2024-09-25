@@ -87,6 +87,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/auth/login", apiPrefix), "POST"),
                 Pair.of(String.format("%s/auth/register", apiPrefix), "POST"),
                 Pair.of(String.format("%s/auth/admin", apiPrefix), "POST"),
+                Pair.of(String.format("%s/auth/forgot-password", apiPrefix), "POST"),
 
                 Pair.of("/home", "GET"),
                 Pair.of("/home/**", "GET"),
