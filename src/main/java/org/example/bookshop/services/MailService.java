@@ -27,16 +27,16 @@ public class MailService {
     private final JavaMailSender mailSender;
     private final ExecutorService executorService = Executors.newFixedThreadPool(2);
 
-    public void sendMail(String mail, MailDto mailStructure) {
+    public void sendMail(MailDto mailStructure) {
         executorService.submit(() -> {
             try {
                 MimeMessage mimeMessage = mailSender.createMimeMessage();
                 MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
                 helper.setFrom(fromMail);
-                helper.setTo(mail);
+                helper.setTo(mailStructure.getTo());
                 helper.setSubject(mailStructure.getSubject());
 
-                String htmlContent = getHtmlContent("123");
+                String htmlContent = getHtmlContent(mailStructure.getMessage());
                 helper.setText(htmlContent, true);
 
                 mailSender.send(mimeMessage);

@@ -1,5 +1,6 @@
 package org.example.bookshop.controllers;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.bookshop.dto.user.ChangePassDto;
@@ -12,11 +13,7 @@ import org.example.bookshop.services.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -55,6 +52,7 @@ public class AuthController {
                 .build());
     }
 
+    @Hidden
     @PostMapping("/currentUser")
     public ResponseEntity<String> currentUser(@AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(userDetails.getUsername());
@@ -68,6 +66,17 @@ public class AuthController {
         return ResponseEntity.ok(Response.<LoginResponse>builder()
                 .data(authService.changePassword(changePassDto, user.getId()))
                 .message("Password changed successfully")
+                .build());
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Response<?>> forgotPassword(
+            @RequestParam String email
+    ) {
+        authService.forgotPassword(email);
+
+        return ResponseEntity.ok(Response.builder()
+                .message("Please check your email for more information")
                 .build());
     }
 
