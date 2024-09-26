@@ -1,7 +1,9 @@
 package org.example.bookshop.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.bookshop.dto.comment.CommentDto;
 import org.example.bookshop.entities.User;
 import org.example.bookshop.responses.PageableResponse;
@@ -9,6 +11,7 @@ import org.example.bookshop.responses.Response;
 import org.example.bookshop.responses.comment.CommentResponse;
 import org.example.bookshop.services.BookService;
 import org.example.bookshop.services.CommentService;
+import org.example.bookshop.utils.JwtGenerator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,17 +28,30 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("${api.base-path}/comments")
+@Slf4j
 public class CommentController {
     private final CommentService commentService;
     private final BookService bookService;
+    private final JwtGenerator jwtGenerator;
 
-    @GetMapping("/{bookId}")
+
+    @GetMapping("/{bookId}") // TODO
     public ResponseEntity<Map<String, Object>> getCommentAndRatingByBookId(
             @PathVariable Integer bookId,
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer limit,
-            @AuthenticationPrincipal User userDetails
+            HttpServletRequest request
+//            @AuthenticationPrincipal User userDetails
     ) {
+        int userId = 0;
+
+        if (request.getHeader("Authorization") != null) {
+            String bearerToken = request.getHeader("Authorization").substring(7);
+            userId = jwtGenerator.extractUserId(bearerToken);
+        }
+
+
+//        log.error("userDetails: {}", userDetails.getUsername());
         Pageable pageable = PageRequest.of(page, limit, Sort.by("commentDate").descending());
 
         Page<CommentResponse> commentResponses = commentService.getCommentByBookId(bookId, pageable);
@@ -48,11 +64,12 @@ public class CommentController {
 
         BigDecimal averageRating = bookService.getAverageRatingById(bookId);
 
+        boolean enableComment = commentService.isEnableComment(bookId, userId) && userId != 0;
 
         Map<String, Object> response = Map.of(
                 "data", pageableResponse,
                 "averageRating", averageRating,
-                "enableComment", commentService.isEnableComment(bookId, userDetails.getId()),
+                "enableComment", enableComment,
                 "detailRating", commentService.calculateRatingPercentage(bookId),
                 "message", "Get comment and rating by book id success");
 
