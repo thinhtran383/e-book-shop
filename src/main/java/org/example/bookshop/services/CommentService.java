@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -54,18 +55,27 @@ public class CommentService {
 
     @Transactional
     public void updateAverageRating(Integer bookID) {
-        BigDecimal averageRating = bookRepository.getAverageRatingById(bookID);
-
-        Book book = bookRepository.findById(bookID)
+        Book reCalculateBook = bookRepository.findById(bookID)
                 .orElseThrow(() -> new DataNotFoundException("Book not found with ID: " + bookID));
 
-        book.setAverageRating(averageRating);
+        List<Rating> ratings = ratingRepository.findAllByBookID_Id(bookID);
 
-        bookRepository.save(book);
+        BigDecimal avgRatingByBook = ratings.stream()
+                .map(rating -> BigDecimal.valueOf(rating.getRating()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .divide(BigDecimal.valueOf(ratings.size()), 1, RoundingMode.HALF_UP);
+
+        reCalculateBook.setAverageRating(avgRatingByBook);
+
+        bookRepository.save(reCalculateBook);
     }
 
     @Transactional(readOnly = true)
     public boolean isEnableComment(Integer bookID, Integer userID) {
+        if (userID == null) {
+            return false;
+        }
+
         long count = orderDetailRepository.countBooksPurchasedByUser(userID, bookID);
         boolean existed = commentRepository.existsByUserID_IdAndBookID_Id(userID, bookID);
 
@@ -111,6 +121,7 @@ public class CommentService {
 
         commentRepository.save(comment);
 
+        updateAverageRating(commentDto.getBookId());
 
         return Map.of(
                 "content", commentDto.getContent(),
