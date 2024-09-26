@@ -1,6 +1,7 @@
 package org.example.bookshop.services;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.bookshop.dto.book.BookDto;
 import org.example.bookshop.entities.Book;
 import org.example.bookshop.entities.Category;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class BookService {
     private final IBookRepository bookRepository;
     private final ModelMapper modelMapper;
@@ -113,6 +115,8 @@ public class BookService {
                 .collect(Collectors.toList());
 
         List<Object[]> purchaseCounts = bookRepository.getPurchaseCountsByBookIds(bookIds);
+
+
 
         Map<Integer, Long> purchaseCountMap = purchaseCounts.stream()
                 .collect(Collectors.toMap(
