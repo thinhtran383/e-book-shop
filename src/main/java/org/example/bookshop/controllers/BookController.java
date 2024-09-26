@@ -60,29 +60,29 @@ public class BookController {
         );
     }
 
-    @GetMapping
-    @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Response<PageableResponse<BookResponse>>> getAllBooks(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int limit
-
-            ) {
-        Pageable pageable = org.springframework.data.domain.PageRequest.of(page, limit);
-
-        org.springframework.data.domain.Page<BookResponse> bookPage = bookService.getAllBooks(pageable);
-
-        PageableResponse<BookResponse> response = PageableResponse.<BookResponse>builder()
-                .totalPages(bookPage.getTotalPages())
-                .totalElements(bookPage.getTotalElements())
-                .elements(bookPage.getContent())
-                .build();
-
-
-        return ResponseEntity.ok(Response.<PageableResponse<BookResponse>>builder()
-                .data(response)
-                .message("Success")
-                .build());
-    }
+//    @GetMapping
+//    @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_ADMIN')")
+//    public ResponseEntity<Response<PageableResponse<BookResponse>>> getAllBooks(
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "10") int limit
+//
+//            ) {
+//        Pageable pageable = org.springframework.data.domain.PageRequest.of(page, limit);
+//
+//        org.springframework.data.domain.Page<BookResponse> bookPage = bookService.getAllBooks(pageable);
+//
+//        PageableResponse<BookResponse> response = PageableResponse.<BookResponse>builder()
+//                .totalPages(bookPage.getTotalPages())
+//                .totalElements(bookPage.getTotalElements())
+//                .elements(bookPage.getContent())
+//                .build();
+//
+//
+//        return ResponseEntity.ok(Response.<PageableResponse<BookResponse>>builder()
+//                .data(response)
+//                .message("Success")
+//                .build());
+//    }
 
     @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<Response<Mono<BookResponse>>> createNewBook(
@@ -129,7 +129,7 @@ public class BookController {
                 .build());
     }
 
-    @GetMapping("/filter")
+    @GetMapping()
     ResponseEntity<Response<PageableResponse<BookResponse>>> filterBooks(
             @RequestParam(required = false) Integer category,
             @RequestParam(required = false) BigDecimal priceMin,
