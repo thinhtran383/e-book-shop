@@ -16,6 +16,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @ToString
 public class ShoppingCart {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "CartID", nullable = false)
     private Integer id;
 

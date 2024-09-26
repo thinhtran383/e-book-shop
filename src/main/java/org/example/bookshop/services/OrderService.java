@@ -1,20 +1,27 @@
 package org.example.bookshop.services;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.bookshop.entities.Order;
+import org.example.bookshop.entities.ShoppingCart;
 import org.example.bookshop.repositories.IOrderDetailRepository;
 import org.example.bookshop.repositories.IOrderRepository;
+import org.example.bookshop.repositories.IShoppingCartRepository;
 import org.example.bookshop.responses.order.OrderResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
     private final IOrderDetailRepository orderDetailRepository;
     private final IOrderRepository orderRepository;
+    private final IShoppingCartRepository shoppingCartRepository;
 
     @Transactional(readOnly = true)
     public Page<OrderResponse> getAllOrders(Pageable pageable) {
@@ -27,4 +34,7 @@ public class OrderService {
         Page<OrderResponse> orderResponsePage = orderRepository.findAllByOrderByUserId(userId, pageable);
         return orderResponsePage;
     }
+
+
+
 }

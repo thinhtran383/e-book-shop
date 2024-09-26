@@ -41,4 +41,12 @@ public class Order {
     @Column(name = "Status", nullable = false, length = 50)
     private String status;
 
+
+    @PrePersist
+    public void prePersist() {
+        this.orderDate = LocalDate.now();
+
+        this.id = (int) (Math.random() * 1000000);
+    }
+
 }

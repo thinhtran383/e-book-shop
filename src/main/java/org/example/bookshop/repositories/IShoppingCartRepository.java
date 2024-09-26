@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface IShoppingCartRepository extends JpaRepository<ShoppingCart, Integer> {
 
     @Query("""
-                select new org.example.bookshop.responses.cart.CartResponse(sc.id,b.id, b.title, sc.quantity, b.price)
+                select new org.example.bookshop.responses.cart.CartResponse(sc.id,b.id, b.title, sc.quantity, b.price, b.image)
                 from ShoppingCart sc
                 join sc.userID u
                 join sc.bookID b
@@ -30,4 +30,5 @@ public interface IShoppingCartRepository extends JpaRepository<ShoppingCart, Int
     Optional<ShoppingCart> findByUserIDAndBookID(@Param("userId") Integer userId, @Param("bookId") Integer bookId);
 
 
+    List<ShoppingCart> findByUserID_Id(Integer userId);
 }

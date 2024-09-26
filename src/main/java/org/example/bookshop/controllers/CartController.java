@@ -45,6 +45,19 @@ public class CartController {
                 .build());
     }
 
+    @PostMapping
+    public ResponseEntity<Response<CartPaymentResponse>> addToCart(
+            @AuthenticationPrincipal User user,
+            @RequestBody UpdateQuantityDto updateQuantityDto
+    ) {
+        CartPaymentResponse responses = shoppingCartService.addToCart(user.getId(), updateQuantityDto);
+
+        return ResponseEntity.ok(Response.<CartPaymentResponse>builder()
+                .data(responses)
+                .message("Success")
+                .build());
+    }
+
     @DeleteMapping("/delete")
     public ResponseEntity<Response<CartPaymentResponse>> deleteBookFromCart(
             @AuthenticationPrincipal User user,
@@ -58,5 +71,14 @@ public class CartController {
                 .build());
     }
 
+    @PostMapping("/checkout")
+    public ResponseEntity<Response<?>> checkOut(
+            @AuthenticationPrincipal User user
+    ) {
+        return ResponseEntity.ok(Response.builder()
+                .message("Success")
+                .data(shoppingCartService.checkOut(user.getId()))
+                .build());
+    }
 
 }
