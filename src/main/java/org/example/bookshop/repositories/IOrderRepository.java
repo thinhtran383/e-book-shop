@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
+
 public interface IOrderRepository extends JpaRepository<Order, Integer> {
 
     @Query("""
@@ -29,5 +31,17 @@ public interface IOrderRepository extends JpaRepository<Order, Integer> {
                 where u.id = :userId
             """)
     Page<OrderResponse> findAllByOrderByUserId(Integer userId, Pageable pageable);
+
+
+
+    @Query("""
+                select month (o.orderDate), year(o.orderDate), sum(o.totalAmount)
+                from Order o
+                where o.status = 'COMPLETED'
+                group by month (o.orderDate), year(o.orderDate)
+                order by year(o.orderDate), month (o.orderDate)
+                
+            """)
+    List<Object[]> getRevenueByMonth();
 
 }
