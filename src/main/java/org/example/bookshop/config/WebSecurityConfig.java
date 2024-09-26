@@ -37,7 +37,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(
                         requests -> {
                             requests
-                                    .requestMatchers(
+                                    .requestMatchers(HttpMethod.GET,
                                             // swagger
                                             "/swagger-ui/**",
                                             "/v3/api-docs/",
@@ -51,8 +51,9 @@ public class WebSecurityConfig {
                                             "/swagger-ui/**",
                                             "/swagger-ui.html",
 
-                                            "/home/**",
-                                            "/home"
+                                            String.format("%s/comments/**", apiPrefix)
+
+
                                     )
                                     .permitAll();
                             requests.requestMatchers(String.format("%s/auth/**", apiPrefix))
