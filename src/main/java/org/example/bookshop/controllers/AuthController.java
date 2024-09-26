@@ -2,6 +2,7 @@ package org.example.bookshop.controllers;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.example.bookshop.dto.user.ChangePassDto;
 import org.example.bookshop.dto.user.LoginDto;
@@ -71,7 +72,7 @@ public class AuthController {
 
     @PostMapping("/forgot-password")
     public ResponseEntity<Response<?>> forgotPassword(
-            @RequestParam String email
+            @RequestParam @Email @Valid String email
     ) {
         authService.forgotPassword(email);
 
