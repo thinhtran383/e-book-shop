@@ -16,4 +16,5 @@ public interface IRatingRepository extends JpaRepository<Rating, Integer> {
 
     long countByBookID_Id(Integer bookID);
 
+    List<Rating> findAllByBookID_Id(Integer bookID);
 }
