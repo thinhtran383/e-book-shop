@@ -1,6 +1,7 @@
 package org.example.bookshop.repositories;
 
 import org.example.bookshop.entities.OrderDetail;
+import org.example.bookshop.responses.book.Top5Response;
 import org.example.bookshop.responses.order.OrderDetailsResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -33,4 +34,12 @@ public interface IOrderDetailRepository extends JpaRepository<OrderDetail, Integ
             where o.userID.id = :userId and o.id = :orderId
             """)
     List<OrderDetailsResponse> findOrderDetailsByUserId(@Param("userId") Integer userId, @Param("orderId") Integer orderId);
+
+
+    @Query("SELECT new org.example.bookshop.responses.book.Top5Response(od.bookID.id,SUM(od.quantity), b.title, b.author) " +
+            "FROM OrderDetail od " +
+            "JOIN od.bookID b " +
+            "GROUP BY od.bookID " +
+            "ORDER BY SUM(od.quantity) DESC")
+    List<Top5Response> findTop5BooksBySales();
 }

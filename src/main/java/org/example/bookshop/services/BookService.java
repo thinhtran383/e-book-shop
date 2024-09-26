@@ -11,12 +11,16 @@ import org.example.bookshop.responses.book.BookResponse;
 import org.example.bookshop.specifications.BookSpecification;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -61,7 +65,6 @@ public class BookService {
         );
 
 
-
         Book newBook = modelMapper.map(bookDto, Book.class);
 
         newBook.setAverageRating(BigDecimal.ZERO);
@@ -76,7 +79,6 @@ public class BookService {
                 );
 
     }
-
 
 
     @Transactional
@@ -104,8 +106,31 @@ public class BookService {
                 .and(BookSpecification.hasPriceGreaterThan(priceMin))
                 .and(BookSpecification.hasPriceLessThan(priceMax));
 
-        return bookRepository.findAll(spec, pageable).map(book -> modelMapper.map(book, BookResponse.class));
+        Page<Book> booksPage = bookRepository.findAllWithCategory(spec, pageable);
+
+        List<Integer> bookIds = booksPage.getContent().stream()
+                .map(Book::getId)
+                .collect(Collectors.toList());
+
+        List<Object[]> purchaseCounts = bookRepository.getPurchaseCountsByBookIds(bookIds);
+
+        Map<Integer, Long> purchaseCountMap = purchaseCounts.stream()
+                .collect(Collectors.toMap(
+                        result -> (Integer) result[0],
+                        result -> (Long) result[1]
+                ));
+
+        List<BookResponse> bookResponses = booksPage.getContent().stream()
+                .map(book -> {
+                    BookResponse response = modelMapper.map(book, BookResponse.class);
+                    response.setPurchaseCount(purchaseCountMap.getOrDefault(book.getId(), 0L));
+                    return response;
+                })
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(bookResponses, pageable, booksPage.getTotalElements());
     }
+
 
     @Transactional(readOnly = true)
     public BigDecimal getAverageRatingById(Integer bookID) {
