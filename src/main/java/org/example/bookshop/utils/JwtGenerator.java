@@ -30,6 +30,7 @@ public class JwtGenerator {
         String token = JWT.create()
                 .withSubject(user.getUsername())
                 .withClaim("roles", roles)
+                .withClaim("userId", user.getId())
                 .sign(Algorithm.HMAC256(secretKey));
 
         return token;
@@ -40,6 +41,14 @@ public class JwtGenerator {
                 .build()
                 .verify(token)
                 .getSubject();
+    }
+
+    public int extractUserId(String token) {
+        return JWT.require(Algorithm.HMAC256(secretKey))
+                .build()
+                .verify(token)
+                .getClaim("userId")
+                .asInt();
     }
 
     public List<Role> extractRoles(String token) {
