@@ -1,10 +1,10 @@
 package org.example.bookshop.controllers;
 
 import io.swagger.v3.oas.annotations.Hidden;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.bookshop.dto.book.BookDto;
-import org.example.bookshop.entities.User;
 import org.example.bookshop.responses.PageableResponse;
 import org.example.bookshop.responses.Response;
 import org.example.bookshop.responses.book.BookResponse;
@@ -16,12 +16,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.example.bookshop.utils.Exporter;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 
 @RestController
@@ -61,7 +61,7 @@ public class BookController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Response<PageableResponse<BookResponse>>> getAllBooks(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int limit
@@ -163,5 +163,23 @@ public class BookController {
                 .message("Success")
                 .build()
         );
+    }
+
+    @GetMapping("/export/excel")
+    public void exportToExcel(HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=categories.xlsx";
+        response.setHeader(headerKey, headerValue);
+
+        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
+
+        Page<BookResponse> bookResponses = bookService.getAllBooks(pageable);
+
+        Exporter<BookResponse> exporter = new Exporter<>(bookResponses.getContent(), "Books");
+
+        exporter.export(response);
+
     }
 }
