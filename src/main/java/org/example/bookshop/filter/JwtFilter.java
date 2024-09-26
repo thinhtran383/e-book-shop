@@ -92,6 +92,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 // comment
                 Pair.of(String.format("%s/comments/**", apiPrefix), "GET"),
 
+                Pair.of(String.format("%s/payments/ipn/**", apiPrefix), "POST"),
+
                 Pair.of("/home", "GET"),
                 Pair.of("/home/**", "GET"),
 

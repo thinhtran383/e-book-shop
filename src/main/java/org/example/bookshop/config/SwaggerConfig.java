@@ -1,6 +1,8 @@
 package org.example.bookshop.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Contact;
+import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -10,10 +12,10 @@ import org.springframework.context.annotation.Configuration;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 
 @OpenAPIDefinition(
-        servers = {
-                @Server(url = "http://localhost:8080", description = "Server URL for development"),
-                @Server(url = "https://api.thinhtran.online", description = "Server URL for production")
 
+        servers = {
+                @Server(url = "http://localhost:8080", description = "Server URL cho phát triển"),
+                @Server(url = "https://api.thinhtran.online", description = "Server URL cho production")
         }
 )
 @Configuration

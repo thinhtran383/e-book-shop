@@ -19,12 +19,14 @@ public class CartResponse {
     private int quantity;
     private BigDecimal price;
     private BigDecimal rowTotal;
+    private String imageUrl;
 
-    public CartResponse(Integer cartId, Integer bookId, String title, int quantity, BigDecimal price) {
+    public CartResponse(Integer cartId, Integer bookId, String title, int quantity, BigDecimal price, String imageUrl) {
         this.cartId = cartId;
         this.bookId = bookId;
         this.title = title;
         this.quantity = quantity;
         this.price = price;
+        this.imageUrl = imageUrl;
     }
 }

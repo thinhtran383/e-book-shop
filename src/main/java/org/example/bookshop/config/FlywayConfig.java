@@ -15,6 +15,7 @@ public class FlywayConfig {
     @Value("${spring.flyway.locations}")
     private String[] locations;
 
+
     @Value("${spring.datasource.url}")
     private String datasourceUrl;
 

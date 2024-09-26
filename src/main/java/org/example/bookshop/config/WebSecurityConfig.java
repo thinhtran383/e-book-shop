@@ -54,8 +54,12 @@ public class WebSecurityConfig {
                                             String.format("%s/comments/**", apiPrefix)
 
 
-                                    )
+                                            )
                                     .permitAll();
+
+                            requests.requestMatchers(HttpMethod.POST,
+                                    String.format("%s/payments/ipn/**", apiPrefix)
+                            ).permitAll();
                             requests.requestMatchers(String.format("%s/auth/**", apiPrefix))
                                     .permitAll();
                         }
