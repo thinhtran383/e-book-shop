@@ -9,6 +9,7 @@ import org.example.bookshop.repositories.IOrderRepository;
 import org.example.bookshop.repositories.IShoppingCartRepository;
 import org.example.bookshop.responses.order.OrderResponse;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +25,17 @@ public class OrderService {
     private final IShoppingCartRepository shoppingCartRepository;
 
     @Transactional(readOnly = true)
-    public Page<OrderResponse> getAllOrders(Pageable pageable) {
+    public Page<OrderResponse> getAllOrders(Pageable pageable, String status) {
         Page<OrderResponse> orderResponsePage = orderRepository.findAllByOrder(pageable);
+
+        if (status != null) {
+            List<OrderResponse> filteredOrders = orderResponsePage.getContent()
+                    .stream().
+                    filter(orderResponse -> orderResponse.getStatus().equals(status))
+                    .toList();
+            return new PageImpl<>(filteredOrders, pageable, filteredOrders.size());
+        }
+
         return orderResponsePage;
     }
 
@@ -35,6 +45,20 @@ public class OrderService {
         return orderResponsePage;
     }
 
+    @Transactional
+    public OrderResponse updateOrderStatus(Integer orderId, String status) {
+        Order order = orderRepository.findById(orderId).orElseThrow();
+        order.setStatus(status);
+        orderRepository.save(order);
 
+        return OrderResponse.builder()
+                .id(order.getId())
+                .customerName(order.getUserID().getCustomer().getFullName())
+                .email(order.getUserID().getEmail())
+                .totalAmount(order.getTotalAmount())
+                .orderDate(order.getOrderDate())
+                .status(order.getStatus())
+                .build();
+    }
 
 }

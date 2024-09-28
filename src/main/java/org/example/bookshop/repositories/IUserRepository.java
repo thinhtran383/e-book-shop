@@ -15,7 +15,7 @@ public interface IUserRepository extends JpaRepository<User, Integer> {
 
     @Query("""
             SELECT new org.example.bookshop.responses.users.UserResponse(u.id, u.username, u.email, c.fullName, c.phone, c.address)
-            FROM User u 
+            FROM User u
             JOIN u.customer c 
             JOIN u.role r 
             WHERE r.roleName = 'customer'
@@ -31,10 +31,4 @@ public interface IUserRepository extends JpaRepository<User, Integer> {
     boolean existsByEmailOrPhone(@Param("email") String email, @Param("phone") String phone);
 
     Optional<User> findByEmail(String email);
-
-
-//    @Query("select new org.example.bookshop.responses.users.LoginResponse(u.username, c.fullName, u.email, c.address, c.phone, r.roleName)" +
-//            "from User u join u.customers c join u.role r" +
-//            " where u.username = :username")
-//    Optional<LoginResponse> findUserWithCustomerDetails(@Param("username") String username);
 }

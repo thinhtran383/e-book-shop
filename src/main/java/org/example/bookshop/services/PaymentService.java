@@ -20,7 +20,6 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
-    private final IOrderRepository orderRepository;
 
     @Value("${momo.endpoint}")
     private String endPoint;

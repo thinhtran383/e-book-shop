@@ -1,18 +1,14 @@
 package org.example.bookshop.controllers;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.example.bookshop.dto.cart.UpdateQuantityDto;
 import org.example.bookshop.entities.User;
 import org.example.bookshop.responses.Response;
 import org.example.bookshop.responses.cart.CartPaymentResponse;
-import org.example.bookshop.responses.cart.CartResponse;
 import org.example.bookshop.services.ShoppingCartService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -72,10 +68,10 @@ public class CartController {
     }
 
     @PostMapping("/checkout")
-    public ResponseEntity<Response<?>> checkOut(
+    public ResponseEntity<Response<CartPaymentResponse>> checkOut(
             @AuthenticationPrincipal User user
     ) {
-        return ResponseEntity.ok(Response.builder()
+        return ResponseEntity.ok(Response.<CartPaymentResponse>builder()
                 .message("Success")
                 .data(shoppingCartService.checkOut(user.getId()))
                 .build());

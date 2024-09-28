@@ -1,6 +1,5 @@
 package org.example.bookshop.controllers;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.example.bookshop.responses.Response;
 import org.example.bookshop.responses.book.Top5Response;

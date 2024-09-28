@@ -1,6 +1,7 @@
 package org.example.bookshop.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.example.bookshop.dto.order.UpdateOrderStatusDto;
 import org.example.bookshop.entities.User;
 import org.example.bookshop.responses.PageableResponse;
 import org.example.bookshop.responses.Response;
@@ -25,11 +26,12 @@ public class OrderController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Response<PageableResponse<OrderResponse>>> getAllOrders(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int limit
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(required = false) String status
     ) {
         PageRequest pageRequest = PageRequest.of(page, limit, Sort.by("orderDate").descending());
 
-        Page<OrderResponse> orderResponsePage = orderService.getAllOrders(pageRequest);
+        Page<OrderResponse> orderResponsePage = orderService.getAllOrders(pageRequest, status);
 
         PageableResponse<OrderResponse> response = PageableResponse.<OrderResponse>builder()
                 .totalPages(orderResponsePage.getTotalPages())
@@ -68,5 +70,18 @@ public class OrderController {
         );
     }
 
+    @PostMapping("/status")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Response<OrderResponse>> updateOrderStatus(
+            @RequestBody UpdateOrderStatusDto updateOrderStatusDto
+    ) {
+        OrderResponse orderResponse = orderService.updateOrderStatus(updateOrderStatusDto.getOrderId(), updateOrderStatusDto.getStatus());
+
+        return ResponseEntity.ok(Response.<OrderResponse>builder()
+                .data(orderResponse)
+                .message("Order status updated successfully")
+                .build()
+        );
+    }
 
 }

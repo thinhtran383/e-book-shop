@@ -10,8 +10,6 @@ import org.example.bookshop.repositories.IOrderRepository;
 import org.example.bookshop.repositories.IShoppingCartRepository;
 import org.example.bookshop.responses.cart.CartPaymentResponse;
 import org.example.bookshop.responses.cart.CartResponse;
-import org.example.bookshop.responses.order.OrderResponse;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,7 +1,6 @@
 package org.example.bookshop.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.bookshop.dto.comment.CommentDto;
@@ -22,7 +21,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -35,7 +33,7 @@ public class CommentController {
     private final JwtGenerator jwtGenerator;
 
 
-    @GetMapping("/{bookId}") // TODO
+    @GetMapping("/{bookId}")
     public ResponseEntity<Map<String, Object>> getCommentAndRatingByBookId(
             @PathVariable Integer bookId,
             @RequestParam(defaultValue = "0") Integer page,
