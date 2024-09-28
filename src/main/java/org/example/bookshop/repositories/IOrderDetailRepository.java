@@ -35,6 +35,15 @@ public interface IOrderDetailRepository extends JpaRepository<OrderDetail, Integ
             """)
     List<OrderDetailsResponse> findOrderDetailsByUserId(@Param("userId") Integer userId, @Param("orderId") Integer orderId);
 
+    @Query("""
+            SELECT new org.example.bookshop.responses.order.OrderDetailsResponse(o.id, b.title, od.quantity, od.price)
+            from OrderDetail od
+            join od.bookID b
+            join od.orderID o
+            where o.id = :orderId
+            """)
+    List<OrderDetailsResponse> findOrderDetailsByOrderId(@Param("orderId") Integer orderId);
+
 
     @Query("SELECT new org.example.bookshop.responses.book.Top5Response(od.bookID.id,SUM(od.quantity), b.title, b.author) " +
             "FROM OrderDetail od " +
