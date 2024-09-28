@@ -24,4 +24,15 @@ public class OrderDetailService {
             return orderDetailsResponses;
         }
     }
+
+    @Transactional
+    public List<OrderDetailsResponse> getAllOrderDetailsByOrderId(Integer orderId) {
+        List<OrderDetailsResponse> orderDetailsResponses = orderDetailRepository.findOrderDetailsByOrderId(orderId);
+
+        if (orderDetailsResponses.isEmpty()) {
+            throw new DataNotFoundException("Order not found");
+        } else {
+            return orderDetailsResponses;
+        }
+    }
 }

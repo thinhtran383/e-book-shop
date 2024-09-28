@@ -33,14 +33,13 @@ public class OrderDetailController {
         );
     }
 
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/admin/{userId}/{orderId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/admin/{orderId}")
     public ResponseEntity<Response<List<OrderDetailsResponse>>> getAllOrderDetailsByOrderId(
-            @PathVariable Integer orderId,
-            @PathVariable Integer userId
+            @PathVariable Integer orderId
     ) {
         return ResponseEntity.ok(Response.<List<OrderDetailsResponse>>builder()
-                .data(orderDetailService.getAllOrderDetailsByUserId(userId, orderId))
+                .data(orderDetailService.getAllOrderDetailsByOrderId(orderId))
                 .message("Success")
                 .build()
         );
