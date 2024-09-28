@@ -112,7 +112,7 @@ public class BookService {
 
         List<Integer> bookIds = booksPage.getContent().stream()
                 .map(Book::getId)
-                .collect(Collectors.toList());
+                .toList();
 
         List<Object[]> purchaseCounts = bookRepository.getPurchaseCountsByBookIds(bookIds);
 
@@ -130,7 +130,7 @@ public class BookService {
                     response.setPurchaseCount(purchaseCountMap.getOrDefault(book.getId(), 0L));
                     return response;
                 })
-                .collect(Collectors.toList());
+                .toList();
 
         return new PageImpl<>(bookResponses, pageable, booksPage.getTotalElements());
     }
@@ -148,5 +148,16 @@ public class BookService {
         );
 
         return modelMapper.map(book, BookResponse.class);
+    }
+
+    @Transactional
+    public void descQuantity(Integer bookID, Integer quantity) {
+        Book book = bookRepository.findById(bookID).orElseThrow(
+                () -> new DataNotFoundException("Book not found")
+        );
+
+        book.setQuantity(book.getQuantity() - quantity);
+
+        bookRepository.save(book);
     }
 }

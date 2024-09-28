@@ -25,6 +25,7 @@ public class ShoppingCartService {
     private final IShoppingCartRepository shoppingCartRepository;
     private final IOrderDetailRepository orderDetailRepository;
     private final IOrderRepository orderRepository;
+    private final BookService bookService;
 
     @Transactional(readOnly = true)
     public CartPaymentResponse getCartsByUserId(Integer userId) {
@@ -146,6 +147,9 @@ public class ShoppingCartService {
             CartPaymentResponse rs = calculateRowTotal(userId);
 
             orderDetailRepository.saveAll(orderDetails);
+
+            shoppingCart.forEach(cart -> bookService.descQuantity(cart.getBookID().getId(), cart.getQuantity()));
+
             shoppingCartRepository.deleteAll(shoppingCart);
 
             return rs;
