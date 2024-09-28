@@ -3,7 +3,6 @@ package org.example.bookshop.repositories;
 import org.example.bookshop.entities.Book;
 import org.example.bookshop.entities.Category;
 import org.example.bookshop.responses.book.BookResponse;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;

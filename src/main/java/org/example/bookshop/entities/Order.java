@@ -41,6 +41,10 @@ public class Order {
     @Column(name = "Status", nullable = false, length = 50)
     private String status;
 
+    @Size(max = 255)
+    @Column(name = "Note")
+    private String note;
+
 
     @PrePersist
     public void prePersist() {

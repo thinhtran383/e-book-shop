@@ -1,7 +1,6 @@
 package org.example.bookshop.controllers;
 
 import io.swagger.v3.oas.annotations.Hidden;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.example.bookshop.entities.User;
 import org.example.bookshop.responses.Response;
@@ -23,7 +22,7 @@ public class PaymentController {
     private final ShoppingCartService shoppingCartService;
 
     @PostMapping
-    public ResponseEntity<Response<?>> payment(
+    public ResponseEntity<Response<String>> payment(
             @AuthenticationPrincipal User user
     ) {
 
@@ -31,7 +30,7 @@ public class PaymentController {
 
         BigDecimal totalPayment = cartPaymentResponse.getTotalPayment();
 
-        return ResponseEntity.ok(Response.builder()
+        return ResponseEntity.ok(Response.<String>builder()
                 .data(paymentService.payWithMoMo(UUID.randomUUID().toString().substring(7), totalPayment, user.getId()))
                 .message("Payment")
                 .build()
@@ -41,14 +40,13 @@ public class PaymentController {
 
     @Hidden
     @PostMapping("/ipn/{userId}")
-    public ResponseEntity<Response<?>> callBackMomo(
+    public ResponseEntity<Response<String>> callBackMomo(
             @PathVariable Integer userId
     ) {
         shoppingCartService.checkOut(userId);
 
-        System.out.println("IPN");
 
-        return ResponseEntity.ok(Response.builder()
+        return ResponseEntity.ok(Response.<String>builder()
                 .message("IPN")
                 .build());
     }

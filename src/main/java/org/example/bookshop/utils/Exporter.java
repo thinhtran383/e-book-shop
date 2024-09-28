@@ -14,10 +14,10 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 public class Exporter<T> {
-    private XSSFWorkbook workbook;
+    private final XSSFWorkbook workbook;
     private XSSFSheet sheet;
-    private List<T> dataList;
-    private String sheetName;
+    private final List<T> dataList;
+    private final String sheetName;
 
     public Exporter(List<T> dataList, String sheetName) {
         this.dataList = dataList;
@@ -71,9 +71,9 @@ public class Exporter<T> {
             int columnCount = 0;
 
             for (Field field : fields) {
-                field.setAccessible(true); // Cho phép truy cập vào các thuộc tính private
+                field.setAccessible(true);
                 try {
-                    Object value = field.get(data); // Lấy giá trị của thuộc tính
+                    Object value = field.get(data);
                     createCell(row, columnCount++, value, null);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();

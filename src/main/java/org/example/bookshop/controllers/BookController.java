@@ -15,7 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.example.bookshop.utils.Exporter;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -89,6 +88,7 @@ public class BookController {
             @ModelAttribute BookDto bookDto
     ) {
         bookService.createNewBook(bookDto);
+
 
         return ResponseEntity.ok(Response.<Mono<BookResponse>>builder()
                 .data(null)

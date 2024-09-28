@@ -7,11 +7,16 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.keygen.StringKeyGenerator;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -27,8 +32,18 @@ public class WebSecurityConfig {
     private final AuthenticationProvider authenticationProvider;
     private final JwtFilter jwtFilter;
 
+
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.oauth2Login(oauth2 ->{
+            oauth2.successHandler((request, response, authentication) -> {
+                response.sendRedirect(String.format("%s/auth/login", apiPrefix));
+            });
+
+        });
+
+
         http
                 .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
@@ -54,7 +69,7 @@ public class WebSecurityConfig {
                                             String.format("%s/comments/**", apiPrefix)
 
 
-                                            )
+                                    )
                                     .permitAll();
 
                             requests.requestMatchers(HttpMethod.POST,
@@ -64,6 +79,7 @@ public class WebSecurityConfig {
                                     .permitAll();
                         }
                 )
+
                 .authorizeHttpRequests(requests -> requests.anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider);
 

@@ -19,7 +19,6 @@ public class JwtGenerator {
 
     @Value("${jwt.secret.key}")
     private String secretKey;
-    private IUserRepository userRepository;
 
 
     public String generateToken(User user) {
