@@ -33,4 +33,13 @@ public class BookSpecification {
             return criteriaBuilder.lessThanOrEqualTo(root.get("price"), priceMax);
         };
     }
+
+    public static Specification<Book> hasPublisher(String publisher) {
+        return (root, query, criteriaBuilder) -> {
+            if (publisher == null) {
+                return criteriaBuilder.conjunction();
+            }
+            return criteriaBuilder.equal(root.get("publisher"), publisher);
+        };
+    }
 }

@@ -18,21 +18,21 @@ import java.util.List;
 
 
 @Repository
-public interface IBookRepository extends JpaRepository<Book, Integer>, JpaSpecificationExecutor<Book>  {
+public interface IBookRepository extends JpaRepository<Book, Integer>, JpaSpecificationExecutor<Book> {
 
     @Query("""
                 Select
                 new org.example.bookshop.responses.book.BookResponse(
                 b.id,
-                 b.title, 
-                 b.author, 
-                 b.price, 
-                 b.quantity, 
-                 b.categoryID.categoryName, 
-                 b.description, 
-                 b.publisher, 
-                 b.publishedDate, 
-                 b.image, 
+                 b.title,
+                 b.author,
+                 b.price,
+                 b.quantity,
+                 b.categoryID.categoryName,
+                 b.description,
+                 b.publisher,
+                 b.publishedDate,
+                 b.image,
                  b.averageRating
                  )
                 From Book b
@@ -52,9 +52,13 @@ public interface IBookRepository extends JpaRepository<Book, Integer>, JpaSpecif
     List<Object[]> getPurchaseCountsByBookIds(@Param("bookIds") List<Integer> bookIds);
 
 
+//    @EntityGraph(attributePaths = {"categoryID"})
+//    @Query("SELECT b FROM Book b")
+//    Page<Book> findAllWithCategory(Specification<Book> spec, Pageable pageable);
+
+
     @EntityGraph(attributePaths = {"categoryID"})
-    @Query("SELECT b FROM Book b")
-    Page<Book> findAllWithCategory(Specification<Book> spec, Pageable pageable);
+    Page<Book> findAll(Specification<Book> spec, Pageable pageable);
 
 
 }
