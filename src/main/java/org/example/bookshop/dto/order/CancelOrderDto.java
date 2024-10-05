@@ -1,0 +1,19 @@
+package org.example.bookshop.dto.order;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class CancelOrderDto {
+
+    @NotNull(message = "Order ID is required")
+    private Integer orderId;
+
+    @NotBlank(message = "Status is required")
+    private String status;
+}

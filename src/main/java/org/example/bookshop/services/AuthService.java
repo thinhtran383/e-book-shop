@@ -15,6 +15,7 @@ import org.example.bookshop.repositories.IUserRepository;
 import org.example.bookshop.responses.users.LoginResponse;
 import org.example.bookshop.utils.JwtGenerator;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.annotation.Description;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
