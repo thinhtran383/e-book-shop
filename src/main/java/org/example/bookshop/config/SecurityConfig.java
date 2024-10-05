@@ -1,7 +1,7 @@
 package org.example.bookshop.config;
 
 import lombok.RequiredArgsConstructor;
-import org.example.bookshop.repositories.IUserRepository;
+import org.example.bookshop.services.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final IUserRepository userRepository;
+    private final UserService userService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -25,7 +25,7 @@ public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService(){
-        return username -> userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found: " + username));
+        return userService::getUserByUsername;
     }
 
     @Bean

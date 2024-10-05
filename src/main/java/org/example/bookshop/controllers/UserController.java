@@ -2,6 +2,7 @@ package org.example.bookshop.controllers;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.example.bookshop.entities.User;
 import org.example.bookshop.responses.PageableResponse;
 import org.example.bookshop.responses.Response;
 import org.example.bookshop.responses.users.UserResponse;
@@ -11,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -63,6 +66,18 @@ public class UserController {
 
         exporter.export(response);
 
+    }
 
+    @GetMapping("/information")
+    @PreAuthorize("#user.id == authentication.principal.id")
+    public ResponseEntity<Response<UserResponse>> getUserDetails(
+            @AuthenticationPrincipal User user
+    ) {
+        UserResponse userResponse = userService.getUserDetailsById(user.getId());
+
+        return ResponseEntity.ok(Response.<UserResponse>builder()
+                .data(userResponse)
+                .message("Success")
+                .build());
     }
 }
