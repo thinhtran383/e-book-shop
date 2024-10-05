@@ -13,9 +13,6 @@ public class CancelOrderDto {
 
     @NotNull(message = "Order ID is required")
     private Integer orderId;
-    
-    @JsonIgnore
-    private String status;
 
     private String note;
 }
