@@ -1,6 +1,7 @@
 package org.example.bookshop.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.example.bookshop.dto.order.CancelOrderDto;
 import org.example.bookshop.dto.order.UpdateOrderStatusDto;
 import org.example.bookshop.entities.User;
 import org.example.bookshop.responses.PageableResponse;
@@ -83,5 +84,20 @@ public class OrderController {
                 .build()
         );
     }
+
+    @PostMapping("/cancel")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<Response<OrderResponse>> cancelOrder(
+            @RequestBody CancelOrderDto cancelOrderDto
+    ) {
+        OrderResponse orderResponse = orderService.updateOrderStatus(cancelOrderDto.getOrderId(), "Cancelled", cancelOrderDto.getNote());
+
+        return ResponseEntity.ok(Response.<OrderResponse>builder()
+                .data(orderResponse)
+                .message("Order cancelled successfully")
+                .build()
+        );
+    }
+
 
 }
