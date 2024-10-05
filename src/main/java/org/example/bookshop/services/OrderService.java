@@ -46,9 +46,10 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponse updateOrderStatus(Integer orderId, String status) {
+    public OrderResponse updateOrderStatus(Integer orderId, String status, String note) {
         Order order = orderRepository.findById(orderId).orElseThrow();
         order.setStatus(status);
+        order.setNote(note);
         orderRepository.save(order);
 
         return OrderResponse.builder()

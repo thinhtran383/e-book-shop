@@ -14,7 +14,7 @@ public interface IUserRepository extends JpaRepository<User, Integer> {
     Optional<User> findByUsername(String username);
 
     @Query("""
-            SELECT new org.example.bookshop.responses.users.UserResponse(u.id, u.username, u.email, c.fullName, c.phone, c.address)
+            SELECT new org.example.bookshop.responses.users.UserResponse(u.id, u.username, u.email, c.fullName, c.phone, c.address, c.createdDate)
             FROM User u
             JOIN u.customer c 
             JOIN u.role r 

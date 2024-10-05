@@ -75,7 +75,7 @@ public class OrderController {
     public ResponseEntity<Response<OrderResponse>> updateOrderStatus(
             @RequestBody UpdateOrderStatusDto updateOrderStatusDto
     ) {
-        OrderResponse orderResponse = orderService.updateOrderStatus(updateOrderStatusDto.getOrderId(), updateOrderStatusDto.getStatus());
+        OrderResponse orderResponse = orderService.updateOrderStatus(updateOrderStatusDto.getOrderId(), updateOrderStatusDto.getStatus(), updateOrderStatusDto.getNote());
 
         return ResponseEntity.ok(Response.<OrderResponse>builder()
                 .data(orderResponse)
