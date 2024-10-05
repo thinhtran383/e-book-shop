@@ -19,8 +19,6 @@ public class JwtGenerator {
 
     @Value("${jwt.secret.key}")
     private String secretKey;
-
-
     public String generateToken(User user) {
         List<String> roles = user.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
