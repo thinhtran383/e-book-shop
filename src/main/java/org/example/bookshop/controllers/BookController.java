@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.bookshop.dto.book.BookDto;
+import org.example.bookshop.dto.book.UpdateBookDto;
+import org.example.bookshop.entities.Book;
 import org.example.bookshop.responses.PageableResponse;
 import org.example.bookshop.responses.Response;
 import org.example.bookshop.responses.book.BookResponse;
@@ -196,5 +198,15 @@ public class BookController {
 
         exporter.export(response);
 
+    }
+
+    @PutMapping(value = "/update-book", consumes = "multipart/form-data")
+    public ResponseEntity<Response<BookResponse>> updateBook(@ModelAttribute UpdateBookDto updateBookDto) {
+
+
+        return ResponseEntity.ok(Response.<BookResponse>builder()
+                .data(bookService.updateBook(updateBookDto))
+                .message("Update book success")
+                .build());
     }
 }
