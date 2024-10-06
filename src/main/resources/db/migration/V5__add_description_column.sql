@@ -1,0 +1,1 @@
+alter table Categories add column description varchar(255);
