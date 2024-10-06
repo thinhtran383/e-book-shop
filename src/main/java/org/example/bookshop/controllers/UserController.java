@@ -2,6 +2,7 @@ package org.example.bookshop.controllers;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.example.bookshop.dto.user.UpdateUserDto;
 import org.example.bookshop.entities.User;
 import org.example.bookshop.responses.PageableResponse;
 import org.example.bookshop.responses.Response;
@@ -14,10 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -78,6 +76,21 @@ public class UserController {
         return ResponseEntity.ok(Response.<UserResponse>builder()
                 .data(userResponse)
                 .message("Success")
+                .build());
+    }
+
+
+    @PutMapping("/user/update-information")
+    @PreAuthorize("#user.id == authentication.principal.id")
+    public ResponseEntity<Response<UserResponse>> updateUserDetails(
+            @AuthenticationPrincipal User user,
+            @RequestBody UpdateUserDto updateUserDto
+    ) {
+        UserResponse updatedUser = userService.updateUserDetails(user.getId(), updateUserDto);
+
+        return ResponseEntity.ok(Response.<UserResponse>builder()
+                .data(updatedUser)
+                .message("User information updated successfully")
                 .build());
     }
 }
