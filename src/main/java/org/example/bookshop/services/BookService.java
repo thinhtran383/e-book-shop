@@ -3,6 +3,7 @@ package org.example.bookshop.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.bookshop.dto.book.BookDto;
+import org.example.bookshop.dto.book.UpdateBookDto;
 import org.example.bookshop.entities.Book;
 import org.example.bookshop.entities.Category;
 import org.example.bookshop.exceptions.DataNotFoundException;
@@ -10,6 +11,7 @@ import org.example.bookshop.repositories.IBookRepository;
 import org.example.bookshop.repositories.ICategoryRepository;
 import org.example.bookshop.responses.book.BookResponse;
 import org.example.bookshop.specifications.BookSpecification;
+import org.hibernate.sql.Update;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -17,8 +19,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -149,5 +153,54 @@ public class BookService {
         book.setQuantity(book.getQuantity() - quantity);
 
         bookRepository.save(book);
+    }
+
+    @Transactional
+    public BookResponse updateBook(UpdateBookDto updateBookDto) {
+        Book book = bookRepository.findById(updateBookDto.getId()).orElseThrow(
+                () -> new DataNotFoundException("Book not found")
+        );
+
+        log.error("Update book: {}", updateBookDto);
+
+
+        if (updateBookDto.getCategoryId() != null && updateBookDto.getCategoryId() != 0) {
+            Category category = categoryRepository.findById(updateBookDto.getCategoryId())
+                    .orElseThrow(() -> new DataNotFoundException("Category not found"));
+            book.setCategoryID(category);
+        }
+
+        if (updateBookDto.getImage() != null && !updateBookDto.getImage().isEmpty()) {
+            String imageUrl = cloudinaryService.upload(updateBookDto.getImage());
+            book.setImage(imageUrl);
+        }
+
+        if (updateBookDto.getAuthor() != null && !updateBookDto.getAuthor().isBlank()) {
+            book.setAuthor(updateBookDto.getAuthor());
+        }
+
+        if (updateBookDto.getDescription() != null && !updateBookDto.getDescription().isBlank()) {
+            book.setDescription(updateBookDto.getDescription());
+        }
+
+        if (updateBookDto.getPublisher() != null && !updateBookDto.getPublisher().isBlank()) {
+            book.setPublisher(updateBookDto.getPublisher());
+        }
+
+
+        if (updateBookDto.getQuantity() != null && updateBookDto.getQuantity() > 0) {
+            book.setQuantity(updateBookDto.getQuantity());
+        }
+
+
+        if (updateBookDto.getTitle() != null) {
+            book.setTitle(updateBookDto.getTitle());
+        }
+
+
+        book = bookRepository.save(book);
+
+        return modelMapper.map(book, BookResponse.class);
+
     }
 }
