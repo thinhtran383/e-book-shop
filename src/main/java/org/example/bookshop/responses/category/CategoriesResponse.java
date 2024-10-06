@@ -10,4 +10,5 @@ import lombok.*;
 public class CategoriesResponse {
     private Integer id;
     private String categoryName;
+    private String description;
 }

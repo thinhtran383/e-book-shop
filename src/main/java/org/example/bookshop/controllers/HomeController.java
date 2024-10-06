@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -32,5 +33,12 @@ public class HomeController {
                 .build());
     }
 
+
+    @GetMapping("/user")
+    public ResponseEntity<Response> userCredentials(Principal principal) {
+        return ResponseEntity.ok(Response.builder()
+                .message(principal.getName())
+                .build());
+    }
 
 }

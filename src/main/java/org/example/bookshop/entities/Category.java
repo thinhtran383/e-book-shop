@@ -22,6 +22,10 @@ public class Category {
     @Column(name = "CategoryName", nullable = false)
     private String categoryName;
 
+    @Lob
+    @Column(name = "Description")
+    private String description;
+
     @PrePersist
     public void prePersist() {
         this.id = (int) (Math.random() * 10000);
