@@ -29,6 +29,16 @@ public class CloudinaryService {
         });
     }
 
+    public String upload(MultipartFile file)  {
+        try{
+            Map<String, String> data = cloudinary.uploader().upload(file.getBytes(), Map.of());
+            String url = data.get("secure_url");
+            return url;
+        }catch (IOException io){
+            throw new RuntimeException("Image upload fail");
+        }
+    }
+
     public Mono<Map> uploadFile(MultipartFile multipartFile) {
         return Mono.fromCallable(() -> {
             File file = convertToFile(multipartFile);
