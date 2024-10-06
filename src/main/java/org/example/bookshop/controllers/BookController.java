@@ -200,9 +200,9 @@ public class BookController {
 
     }
 
-    @PutMapping(value = "/update-book", consumes = "multipart/form-data")
-    public ResponseEntity<Response<BookResponse>> updateBook(@ModelAttribute UpdateBookDto updateBookDto) {
-
+    @PutMapping(value = "/update-book/{book-id}", consumes = "multipart/form-data")
+    public ResponseEntity<Response<BookResponse>> updateBook(@ModelAttribute UpdateBookDto updateBookDto, @PathVariable("book-id") int bookID) {
+        updateBookDto.setId(bookID);
 
         return ResponseEntity.ok(Response.<BookResponse>builder()
                 .data(bookService.updateBook(updateBookDto))

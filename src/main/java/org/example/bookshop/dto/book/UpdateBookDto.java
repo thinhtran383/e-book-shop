@@ -1,5 +1,6 @@
 package org.example.bookshop.dto.book;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -13,8 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 @Builder
 @ToString
 public class UpdateBookDto {
-    @NotBlank(message = "Id is required")
+    @Hidden
     private Integer id;
+
     private String title;
     private String author;
     private Integer quantity;
