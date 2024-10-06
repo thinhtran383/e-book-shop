@@ -1,6 +1,7 @@
 package org.example.bookshop.services;
 
 import lombok.RequiredArgsConstructor;
+import org.example.bookshop.dto.user.UpdateUserDto;
 import org.example.bookshop.entities.User;
 import org.example.bookshop.repositories.IUserRepository;
 import org.example.bookshop.responses.users.UserResponse;
@@ -29,14 +30,49 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserResponse getUserDetailsById(Integer userId){
+    public UserResponse getUserDetailsById(Integer userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found: " + userId));
         return UserResponse.builder()
+                .id(user.getId())
                 .username(user.getUsername())
                 .address(user.getCustomer().getAddress())
                 .email(user.getEmail())
                 .fullName(user.getCustomer().getFullName())
                 .phoneNumber(user.getCustomer().getPhone())
+                .createdDate(user.getCustomer().getCreatedDate())
+                .build();
+    }
+
+    @Transactional
+    public UserResponse updateUserDetails(Integer userId, UpdateUserDto userDto) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found: " + userId));
+
+        if(userDto.getEmail() != null) {
+            user.setEmail(userDto.getEmail());
+        }
+
+        if(userDto.getFullName() != null) {
+            user.getCustomer().setFullName(userDto.getFullName());
+        }
+
+        if(userDto.getAddress() != null) {
+            user.getCustomer().setAddress(userDto.getAddress());
+        }
+
+        if(userDto.getPhone() != null) {
+            user.getCustomer().setPhone(userDto.getPhone());
+        }
+
+
+        userRepository.save(user);
+        return UserResponse.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .address(user.getCustomer().getAddress())
+                .email(user.getEmail())
+                .fullName(user.getCustomer().getFullName())
+                .phoneNumber(user.getCustomer().getPhone())
+                .createdDate(user.getCustomer().getCreatedDate())
                 .build();
     }
 
