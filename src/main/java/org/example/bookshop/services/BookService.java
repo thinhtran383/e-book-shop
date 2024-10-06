@@ -92,11 +92,12 @@ public class BookService {
     }
 
     @Transactional(readOnly = true)
-    public Page<BookResponse> filterBooks(Integer category, BigDecimal priceMin, BigDecimal priceMax, String publisher, Pageable pageable) {
+    public Page<BookResponse> filterBooks(Integer category, BigDecimal priceMin, BigDecimal priceMax, String publisher, String title, Pageable pageable) {
         Specification<Book> spec = Specification.where(BookSpecification.hasCategory(category))
                 .and(BookSpecification.hasPriceGreaterThan(priceMin))
                 .and(BookSpecification.hasPriceLessThan(priceMax))
-                .and(BookSpecification.hasPublisher(publisher));
+                .and(BookSpecification.hasPublisher(publisher))
+                .and(BookSpecification.hasTitle(title));
 
         Page<Book> booksPage = bookRepository.findAll(spec, pageable);
 
