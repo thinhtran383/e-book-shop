@@ -3,6 +3,7 @@ package org.example.bookshop.controllers;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.bookshop.dto.category.CategoryDto;
+import org.example.bookshop.dto.category.UpdateCategoryDto;
 import org.example.bookshop.responses.PageableResponse;
 import org.example.bookshop.responses.Response;
 import org.example.bookshop.responses.category.CategoriesResponse;
@@ -83,4 +84,16 @@ public class CategoryController {
                 .message("Delete category success")
                 .build());
     }
+
+    @PutMapping("/update-category/{id}")
+    public ResponseEntity<Response<CategoriesResponse>> updateCategory(
+            @PathVariable Integer id,
+            @RequestBody UpdateCategoryDto category
+    ) {
+        return ResponseEntity.ok(Response.<CategoriesResponse>builder()
+                .data(categoryService.updateCategory(id, category))
+                .message("Update category success")
+                .build());
+    }
+
 }
