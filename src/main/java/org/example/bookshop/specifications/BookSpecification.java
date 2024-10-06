@@ -42,4 +42,16 @@ public class BookSpecification {
             return criteriaBuilder.equal(root.get("publisher"), publisher);
         };
     }
+
+    public static Specification<Book> hasTitle(String title) {
+        return (root, query, criteriaBuilder) -> {
+            if (title == null) {
+                return criteriaBuilder.conjunction();
+            }
+            return criteriaBuilder.like(root.get("title"), "%" + title + "%");
+        };
+    }
+
+
+
 }

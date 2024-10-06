@@ -146,6 +146,7 @@ public class BookController {
             @RequestParam(required = false) BigDecimal priceMin,
             @RequestParam(required = false) BigDecimal priceMax,
             @RequestParam(required = false) String publisher,
+            @RequestParam(required = false) String title,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int limit,
             @RequestParam(required = false) String sort
@@ -162,7 +163,7 @@ public class BookController {
 
         Pageable pageable = PageRequest.of(page, limit, sorting);
 
-        Page<BookResponse> bookResponses = bookService.filterBooks(category, priceMin, priceMax, publisher, pageable);
+        Page<BookResponse> bookResponses = bookService.filterBooks(category, priceMin, priceMax, publisher, title, pageable);
 
         PageableResponse<BookResponse> response = PageableResponse.<BookResponse>builder()
                 .totalPages(bookResponses.getTotalPages())
