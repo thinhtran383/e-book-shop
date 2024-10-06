@@ -21,7 +21,7 @@ import java.util.Set;
 @Table(name = "Books", schema = "book_shop")
 public class Book {
     @Id
-    @Column(name = "BookID", nullable = false)
+    @Column(name = "BookID")
     private Integer id;
 
     @Size(max = 255)

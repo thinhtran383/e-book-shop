@@ -84,15 +84,25 @@ public class BookController {
 //                .build());
 //    }
 
+//    @PostMapping(consumes = "multipart/form-data")
+//    public ResponseEntity<Response<Mono<BookResponse>>> createNewBook(
+//            @ModelAttribute BookDto bookDto
+//    ) {
+//        bookService.createNewBook(bookDto);
+//
+//
+//        return ResponseEntity.ok(Response.<Mono<BookResponse>>builder()
+//                .data(null)
+//                .message("Success")
+//                .build());
+//    }
+
     @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<Response<Mono<BookResponse>>> createNewBook(
+    public ResponseEntity<Response<BookResponse>> createNewBook(
             @ModelAttribute BookDto bookDto
     ) {
-        bookService.createNewBook(bookDto);
-
-
-        return ResponseEntity.ok(Response.<Mono<BookResponse>>builder()
-                .data(null)
+        return ResponseEntity.ok(Response.<BookResponse>builder()
+                .data(bookService.createNewBook(bookDto))
                 .message("Success")
                 .build());
     }

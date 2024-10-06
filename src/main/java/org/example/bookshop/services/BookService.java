@@ -37,49 +37,38 @@ public class BookService {
         return bookRepository.findAllBook(pageable);
     }
 
-//    @Transactional
-//    public BookResponse createNewBook(BookDto bookDto) {
-//        categoryRepository.findById(bookDto.getCategoryID()).orElseThrow(
-//                () -> new DataNotFoundException("Category not found")
-//        );
-//
-//        Book newBook = modelMapper.map(bookDto, Book.class);
-//        newBook.setAverageRating(BigDecimal.ZERO);
-//
-//        cloudinaryService.uploadFile(bookDto.getImage())
-//                .subscribe(uploadResult -> {
-//                    String imageUrl = (String) uploadResult.get("url");
-//                    newBook.setImage(imageUrl);
-//
-//                    newBook.setCategoryID(new Category(bookDto.getCategoryID(), bookDto.getCategoryName()));
-//
-//                    bookRepository.save(newBook);
-//
-//                });
-//
-//        return modelMapper.map(newBook, BookResponse.class);
-//    }
 
     @Transactional
-    public void createNewBook(BookDto bookDto) {
-        categoryRepository.findById(bookDto.getCategoryID()).orElseThrow(
-                () -> new DataNotFoundException("Category not found")
-        );
+    public BookResponse createNewBook(BookDto bookDto) {
+        Book book = modelMapper.map(bookDto, Book.class);
+
+        book.setId(null);
+
+        Category category = categoryRepository.findById(bookDto.getCategoryID())
+                .orElseThrow(() -> new DataNotFoundException("Category not found"));
+
+        String imageUrl = cloudinaryService.upload(bookDto.getImage());
+
+        book.setCategoryID(category);
+        book.setImage(imageUrl);
+        book.setAverageRating(BigDecimal.ZERO);
 
 
-        Book newBook = modelMapper.map(bookDto, Book.class);
+        book = bookRepository.save(book);
 
-        newBook.setAverageRating(BigDecimal.ZERO);
-
-        cloudinaryService.uploadFile(bookDto.getImage())
-                .doOnNext(uploadResult -> {
-                    String imageUrl = (String) uploadResult.get("url");
-                    newBook.setImage(imageUrl);
-                    newBook.setCategoryID(new Category(bookDto.getCategoryID(), bookDto.getCategoryName()));
-                }).subscribe(
-                        uploadResult -> bookRepository.save(newBook)
-                );
-
+        return BookResponse.builder()
+                .image(imageUrl)
+                .author(book.getAuthor())
+                .categoryName(book.getCategoryID().getCategoryName())
+                .description(book.getDescription())
+                .id(book.getId())
+                .price(book.getPrice())
+                .publisher(book.getPublisher())
+                .quantity(book.getQuantity())
+                .title(book.getTitle())
+                .averageRating(BigDecimal.ZERO)
+                .publishedDate(book.getPublishedDate())
+                .build();
     }
 
 
