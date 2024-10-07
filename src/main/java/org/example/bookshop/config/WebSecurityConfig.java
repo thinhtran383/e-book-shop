@@ -58,8 +58,10 @@ public class WebSecurityConfig {
                                             "/swagger-ui/**",
                                             "/swagger-ui.html",
 
-                                            String.format("%s/comments/**", apiPrefix),
 
+                                            // comment
+                                            String.format("%s/comments/**", apiPrefix),
+                                            String.format("%s/comments", apiPrefix),
 
                                             "/home/**",
 

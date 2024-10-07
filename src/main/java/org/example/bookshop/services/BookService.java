@@ -138,7 +138,20 @@ public class BookService {
                 () -> new DataNotFoundException("Book not found")
         );
 
-        return modelMapper.map(book, BookResponse.class);
+        return BookResponse.builder()
+                .id(book.getId())
+                .title(book.getTitle())
+                .author(book.getAuthor())
+                .price(book.getPrice())
+                .quantity(book.getQuantity())
+                .categoryName(book.getCategoryID().getCategoryName())
+                .description(book.getDescription())
+                .publisher(book.getPublisher())
+                .publishedDate(book.getPublishedDate())
+                .image(book.getImage())
+                .averageRating(book.getAverageRating())
+                .purchaseCount(bookRepository.getPurchaseCountByBookID(bookID))
+                .build();
     }
 
     @Transactional

@@ -10,9 +10,5 @@ import net.minidev.json.annotate.JsonIgnore;
 @AllArgsConstructor
 @Builder
 public class CancelOrderDto {
-
-    @NotNull(message = "Order ID is required")
-    private Integer orderId;
-
     private String note;
 }

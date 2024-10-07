@@ -1,7 +1,9 @@
 package org.example.bookshop.controllers;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.example.bookshop.dto.order.CancelOrderDto;
+import org.example.bookshop.dto.order.ConfirmOrder;
 import org.example.bookshop.dto.order.UpdateOrderStatusDto;
 import org.example.bookshop.entities.User;
 import org.example.bookshop.responses.PageableResponse;
@@ -15,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -71,6 +75,8 @@ public class OrderController {
         );
     }
 
+
+    @Hidden
     @PutMapping("/update-status-order")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Response<OrderResponse>> updateOrderStatus(
@@ -85,12 +91,13 @@ public class OrderController {
         );
     }
 
-    @PutMapping("/confirm")
+    @PutMapping("/confirm/{orderId}")
     @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     public ResponseEntity<Response<OrderResponse>> confirmOrder(
-            @RequestBody UpdateOrderStatusDto updateOrderStatusDto
+            @RequestBody ConfirmOrder note,
+            @PathVariable Integer orderId
     ) {
-        OrderResponse orderResponse = orderService.updateOrderStatus(updateOrderStatusDto.getOrderId(), "Completed", updateOrderStatusDto.getNote());
+        OrderResponse orderResponse = orderService.updateOrderStatus(orderId, "Completed", note.getNote());
 
         return ResponseEntity.ok(Response.<OrderResponse>builder()
                 .data(orderResponse)
@@ -99,12 +106,14 @@ public class OrderController {
         );
     }
 
-    @PostMapping("/cancel")
+    @PutMapping("/cancel/{orderId}")
     @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Response<OrderResponse>> cancelOrder(
-            @RequestBody CancelOrderDto cancelOrderDto
+            @RequestBody ConfirmOrder cancelOrder,
+            @PathVariable Integer orderId
+
     ) {
-        OrderResponse orderResponse = orderService.cancelOrder(cancelOrderDto.getOrderId(), cancelOrderDto.getNote());
+        OrderResponse orderResponse = orderService.cancelOrder(orderId, cancelOrder.getNote());
 
         return ResponseEntity.ok(Response.<OrderResponse>builder()
                 .data(orderResponse)
