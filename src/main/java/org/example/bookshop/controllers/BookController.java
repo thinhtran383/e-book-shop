@@ -1,6 +1,7 @@
 package org.example.bookshop.controllers;
 
 import io.swagger.v3.oas.annotations.Hidden;
+import jakarta.annotation.security.PermitAll;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
