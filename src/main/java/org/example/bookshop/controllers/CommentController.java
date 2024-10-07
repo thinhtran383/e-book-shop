@@ -39,7 +39,6 @@ public class CommentController {
             @RequestParam(defaultValue = "0") Integer page,
             @RequestParam(defaultValue = "10") Integer limit,
             HttpServletRequest request
-//            @AuthenticationPrincipal User userDetails
     ) {
         int userId = 0;
 
@@ -48,8 +47,6 @@ public class CommentController {
             userId = jwtGenerator.extractUserId(bearerToken);
         }
 
-
-//        log.error("userDetails: {}", userDetails.getUsername());
         Pageable pageable = PageRequest.of(page, limit, Sort.by("commentDate").descending());
 
         Page<CommentResponse> commentResponses = commentService.getCommentByBookId(bookId, pageable);
@@ -70,6 +67,7 @@ public class CommentController {
                 "enableComment", enableComment,
                 "detailRating", commentService.calculateRatingPercentage(bookId),
                 "message", "Get comment and rating by book id success");
+
 
         return ResponseEntity.ok(response);
     }

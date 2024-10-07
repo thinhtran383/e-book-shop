@@ -62,4 +62,7 @@ public interface IBookRepository extends JpaRepository<Book, Integer>, JpaSpecif
 
     @Query("SELECT b.quantity FROM Book b WHERE b.id = :bookID")
     int getQuantityById(Integer bookID);
+
+    @Query("select SUM(od.quantity) from OrderDetail od where od.bookID.id = :bookID")
+    Long getPurchaseCountByBookID(@Param("bookID") Integer bookID);
 }

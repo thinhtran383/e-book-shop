@@ -53,8 +53,7 @@ public class CommentService {
         return ratingCounts;
     }
 
-    @Transactional
-    public void updateAverageRating(Integer bookID) {
+    private void updateAverageRating(Integer bookID) {
         Book reCalculateBook = bookRepository.findById(bookID)
                 .orElseThrow(() -> new DataNotFoundException("Book not found with ID: " + bookID));
 
@@ -121,7 +120,7 @@ public class CommentService {
 
         commentRepository.save(comment);
 
-        updateAverageRating(commentDto.getBookId());
+        this.updateAverageRating(commentDto.getBookId());
 
         return Map.of(
                 "content", commentDto.getContent(),
