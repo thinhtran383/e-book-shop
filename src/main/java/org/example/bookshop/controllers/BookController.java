@@ -110,6 +110,8 @@ public class BookController {
                 .build());
     }
 
+
+    @Hidden
     @GetMapping("/{categoryID}")
     public ResponseEntity<Response<PageableResponse<BookResponse>>> getBooksByCategory(
             @PathVariable int categoryID,
