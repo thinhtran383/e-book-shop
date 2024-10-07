@@ -16,4 +16,5 @@ public class CartPaymentResponse {
     private List<CartResponse> cartResponses;
 
     private BigDecimal totalPayment;
+    private Integer totalItem;
 }

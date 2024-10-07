@@ -63,6 +63,7 @@ public class ShoppingCartService {
         return CartPaymentResponse.builder()
                 .cartResponses(carts)
                 .totalPayment(totalPayment)
+                .totalItem(carts.size())
                 .build();
     }
 
@@ -92,6 +93,7 @@ public class ShoppingCartService {
                 .totalPayment(carts.stream()
                         .map(CartResponse::getRowTotal)
                         .reduce(BigDecimal.ZERO, BigDecimal::add))
+                .totalItem(carts.size())
                 .build();
     }
 
@@ -111,6 +113,7 @@ public class ShoppingCartService {
                 .totalPayment(result.stream()
                         .map(CartResponse::getRowTotal)
                         .reduce(BigDecimal.ZERO, BigDecimal::add))
+                .totalItem(result.size())
                 .build();
     }
 
