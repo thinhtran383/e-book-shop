@@ -19,17 +19,21 @@ import java.io.IOException;
 public class CorsFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        log.debug("CORS filter triggered for request: {}", request.getRequestURI());
+
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS, DELETE");
         response.setHeader("Access-Control-Max-Age", "3600");
-        response.setHeader("Access-Control-Allow-Headers", "authorization, content-type, xsrf-token, _csrf");
+        response.setHeader("Access-Control-Allow-Headers", "authorization, content-type, xsrf-token, _csrf, cache-control");
+        response.setHeader("Access-Control-Expose-Headers", "Cache-Control");
         response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("cache-control", "public, max-age=31536000");
 
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            log.debug("Preflight request detected, returning 200 OK");
             response.setStatus(HttpServletResponse.SC_OK);
-        } else {
-            filterChain.doFilter(request, response);
+            return;  // Kết thúc preflight request ở đây
         }
+
+        filterChain.doFilter(request, response);
     }
 }
