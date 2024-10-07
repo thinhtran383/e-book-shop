@@ -80,7 +80,7 @@ public class UserController {
     }
 
 
-    @PutMapping("/user/update-information")
+    @PutMapping("/update-information")
     @PreAuthorize("#user.id == authentication.principal.id")
     public ResponseEntity<Response<UserResponse>> updateUserDetails(
             @AuthenticationPrincipal User user,
