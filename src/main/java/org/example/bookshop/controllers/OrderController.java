@@ -71,8 +71,8 @@ public class OrderController {
         );
     }
 
-    @PostMapping("/status")
-    @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_ADMIN')")
+    @PutMapping("/update-status-order")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Response<OrderResponse>> updateOrderStatus(
             @RequestBody UpdateOrderStatusDto updateOrderStatusDto
     ) {
@@ -85,12 +85,26 @@ public class OrderController {
         );
     }
 
+    @PutMapping("/confirm")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    public ResponseEntity<Response<OrderResponse>> confirmOrder(
+            @RequestBody UpdateOrderStatusDto updateOrderStatusDto
+    ) {
+        OrderResponse orderResponse = orderService.updateOrderStatus(updateOrderStatusDto.getOrderId(), "Completed", updateOrderStatusDto.getNote());
+
+        return ResponseEntity.ok(Response.<OrderResponse>builder()
+                .data(orderResponse)
+                .message("Order confirmed successfully")
+                .build()
+        );
+    }
+
     @PostMapping("/cancel")
     @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Response<OrderResponse>> cancelOrder(
             @RequestBody CancelOrderDto cancelOrderDto
     ) {
-        OrderResponse orderResponse = orderService.updateOrderStatus(cancelOrderDto.getOrderId(), "Cancelled", cancelOrderDto.getNote());
+        OrderResponse orderResponse = orderService.cancelOrder(cancelOrderDto.getOrderId(), cancelOrderDto.getNote());
 
         return ResponseEntity.ok(Response.<OrderResponse>builder()
                 .data(orderResponse)

@@ -25,7 +25,7 @@ public class ShoppingCartService {
     private final IOrderRepository orderRepository;
     private final BookService bookService;
 
-    @Transactional(readOnly = true)
+    @Transactional
     public CartPaymentResponse getCartsByUserId(Integer userId) {
         return calculateRowTotal(userId);
     }
@@ -52,6 +52,20 @@ public class ShoppingCartService {
     private CartPaymentResponse calculateRowTotal(Integer userId) {
         List<CartResponse> carts = shoppingCartRepository.findAllCartsByUserId(userId);
 
+
+        carts.forEach(cart -> { // Todo: optimize this
+            int maxQuantityInStock = bookService.getBookQuantity(cart.getBookId());
+
+            if (cart.getQuantity() > maxQuantityInStock) {
+                cart.setQuantity(maxQuantityInStock);
+
+                ShoppingCart shoppingCart = shoppingCartRepository.findByUserIDAndBookID(userId, cart.getBookId())
+                        .orElseThrow(() -> new DataNotFoundException("Shopping cart item not found"));
+                shoppingCart.setQuantity(maxQuantityInStock);
+                shoppingCartRepository.save(shoppingCart);
+            }
+        });
+
         carts.forEach(cart ->
                 cart.setRowTotal(cart.getPrice().multiply(BigDecimal.valueOf(cart.getQuantity())))
         );
@@ -71,6 +85,11 @@ public class ShoppingCartService {
     @Transactional
     public CartPaymentResponse updateQuantityBook(Integer userId, UpdateQuantityDto updateQuantityDto) {
         List<CartResponse> carts = shoppingCartRepository.findAllCartsByUserId(userId);
+
+        if (bookService.getBookQuantity(updateQuantityDto.getBookId()) < updateQuantityDto.getNewQuantity()) {
+            throw new DataNotFoundException("Not enough quantity");
+        }
+
 
         carts.stream()
                 .filter(cart -> cart.getBookId().equals(updateQuantityDto.getBookId()))

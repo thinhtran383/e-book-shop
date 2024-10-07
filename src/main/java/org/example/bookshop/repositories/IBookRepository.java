@@ -60,5 +60,6 @@ public interface IBookRepository extends JpaRepository<Book, Integer>, JpaSpecif
     @EntityGraph(attributePaths = {"categoryID"})
     Page<Book> findAll(Specification<Book> spec, Pageable pageable);
 
-
+    @Query("SELECT b.quantity FROM Book b WHERE b.id = :bookID")
+    int getQuantityById(Integer bookID);
 }

@@ -3,10 +3,8 @@ package org.example.bookshop.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.bookshop.entities.Order;
-import org.example.bookshop.entities.ShoppingCart;
-import org.example.bookshop.repositories.IOrderDetailRepository;
+import org.example.bookshop.exceptions.ResourceAlreadyExisted;
 import org.example.bookshop.repositories.IOrderRepository;
-import org.example.bookshop.repositories.IShoppingCartRepository;
 import org.example.bookshop.responses.order.OrderResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -20,9 +18,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class OrderService {
-    private final IOrderDetailRepository orderDetailRepository;
     private final IOrderRepository orderRepository;
-    private final IShoppingCartRepository shoppingCartRepository;
+    private final BookService bookService;
 
     @Transactional(readOnly = true)
     public Page<OrderResponse> getAllOrders(Pageable pageable, String status) {
@@ -51,6 +48,35 @@ public class OrderService {
         order.setStatus(status);
         order.setNote(note);
         orderRepository.save(order);
+        return OrderResponse.builder()
+                .id(order.getId())
+                .customerName(order.getUserID().getCustomer().getFullName())
+                .email(order.getUserID().getEmail())
+                .totalAmount(order.getTotalAmount())
+                .orderDate(order.getOrderDate())
+                .status(order.getStatus())
+                .build();
+    }
+
+    @Transactional // todo: optimize this
+    public OrderResponse cancelOrder(Integer orderId, String note) {
+        Order order = orderRepository.findById(orderId).orElseThrow();
+
+        if (order.getStatus().equals("Delivering")) {
+            throw new ResourceAlreadyExisted("Cannot cancel delivering order");
+        }
+
+        if (order.getStatus().equals("CANCELLED")) {
+            throw new ResourceAlreadyExisted("Order already cancelled");
+        }
+
+        order.getOrderDetails().forEach(orderDetail -> {
+            increaseBookQuantity(orderDetail.getBookID().getId(), orderDetail.getQuantity());
+        });
+
+        order.setStatus("CANCELLED");
+        order.setNote(note);
+        orderRepository.save(order);
 
         return OrderResponse.builder()
                 .id(order.getId())
@@ -62,4 +88,7 @@ public class OrderService {
                 .build();
     }
 
+    private void increaseBookQuantity(Integer bookId, Integer quantity) {
+        bookService.incQuantity(bookId, quantity);
+    }
 }

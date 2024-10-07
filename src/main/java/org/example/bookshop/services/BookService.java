@@ -11,7 +11,6 @@ import org.example.bookshop.repositories.IBookRepository;
 import org.example.bookshop.repositories.ICategoryRepository;
 import org.example.bookshop.responses.book.BookResponse;
 import org.example.bookshop.specifications.BookSpecification;
-import org.hibernate.sql.Update;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -19,10 +18,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
-import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -156,6 +153,17 @@ public class BookService {
     }
 
     @Transactional
+    public void incQuantity(Integer bookID, Integer quantity) {
+        Book book = bookRepository.findById(bookID).orElseThrow(
+                () -> new DataNotFoundException("Book not found")
+        );
+
+        book.setQuantity(book.getQuantity() + quantity);
+
+        bookRepository.save(book);
+    }
+
+    @Transactional
     public BookResponse updateBook(UpdateBookDto updateBookDto) {
         Book book = bookRepository.findById(updateBookDto.getId()).orElseThrow(
                 () -> new DataNotFoundException("Book not found")
@@ -202,5 +210,10 @@ public class BookService {
 
         return modelMapper.map(book, BookResponse.class);
 
+    }
+
+    @Transactional(readOnly = true)
+    public int getBookQuantity(Integer bookID) {
+        return bookRepository.getQuantityById(bookID);
     }
 }
