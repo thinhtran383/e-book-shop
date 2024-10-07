@@ -21,7 +21,7 @@ import java.util.List;
 public class OrderDetailController {
     private final OrderDetailService orderDetailService;
 
-    @GetMapping("/current-user/{orderId}")
+    @GetMapping("/user/{orderId}")
     public ResponseEntity<Response<List<OrderDetailsResponse>>> getAllOrderDetailsByOrderId(
             @PathVariable Integer orderId,
             @AuthenticationPrincipal User user
