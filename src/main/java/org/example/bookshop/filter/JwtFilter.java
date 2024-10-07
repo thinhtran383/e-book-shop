@@ -94,8 +94,14 @@ public class JwtFilter extends OncePerRequestFilter {
 
                 Pair.of(String.format("%s/payments/ipn/**", apiPrefix), "POST"),
 
-                // oauth2
-                Pair.of(String.format("%s/auth/oauth2", apiPrefix), "GET"),
+                // book
+                Pair.of(String.format("%s/books/**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/books", apiPrefix), "GET"),
+                Pair.of(String.format("%s/books/details/**", apiPrefix), "GET"),
+
+                // category
+                Pair.of(String.format("%s/categories/**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/categories", apiPrefix), "GET"),
 
                 Pair.of("/home", "GET"),
                 Pair.of("/home/**", "GET"),

@@ -20,13 +20,12 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @RequiredArgsConstructor
 @EnableWebSecurity
 @EnableWebMvc
-@EnableMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity
 public class WebSecurityConfig {
     @Value("${api.base-path}")
     private String apiPrefix;
     private final AuthenticationProvider authenticationProvider;
     private final JwtFilter jwtFilter;
-
 
 
     @Bean
@@ -62,7 +61,15 @@ public class WebSecurityConfig {
                                             String.format("%s/comments/**", apiPrefix),
 
 
-                                            "/home/**"
+                                            "/home/**",
+
+                                            // book
+                                            String.format("%s/books/**", apiPrefix),
+                                            String.format("%s/books", apiPrefix),
+
+                                            // category
+                                            String.format("%s/categories/**", apiPrefix),
+                                            String.format("%s/categories", apiPrefix)
 
 
                                     )
