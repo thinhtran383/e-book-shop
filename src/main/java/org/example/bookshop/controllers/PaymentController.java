@@ -31,7 +31,7 @@ public class PaymentController {
         BigDecimal totalPayment = cartPaymentResponse.getTotalPayment();
 
         return ResponseEntity.ok(Response.<String>builder()
-                .data(paymentService.payWithMoMo(UUID.randomUUID().toString().substring(7), totalPayment, user.getId()))
+                .data(paymentService.payWithMoMo(UUID.randomUUID().toString().substring(0, 5), totalPayment, user.getId()))
                 .message("Payment")
                 .build()
         );

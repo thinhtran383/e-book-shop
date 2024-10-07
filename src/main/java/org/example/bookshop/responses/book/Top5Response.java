@@ -21,4 +21,6 @@ public class Top5Response {
 
     @NotNull
     private String author;
+
+    private String image;
 }

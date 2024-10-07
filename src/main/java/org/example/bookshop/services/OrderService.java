@@ -70,6 +70,10 @@ public class OrderService {
             throw new ResourceAlreadyExisted("Order already cancelled");
         }
 
+        if (order.getStatus().equals("Completed")) {
+            throw new ResourceAlreadyExisted("Cannot cancel completed order");
+        }
+
         order.getOrderDetails().forEach(orderDetail -> {
             increaseBookQuantity(orderDetail.getBookID().getId(), orderDetail.getQuantity());
         });
