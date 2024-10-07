@@ -9,6 +9,8 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -45,6 +47,8 @@ public class Order {
     @Column(name = "Note")
     private String note;
 
+    @OneToMany(mappedBy = "orderID", orphanRemoval = true)
+    private List<OrderDetail> orderDetails = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {
