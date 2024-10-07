@@ -27,6 +27,7 @@ public class CorsFilter extends OncePerRequestFilter {
         response.setHeader("Access-Control-Allow-Headers", "authorization, content-type, xsrf-token, _csrf, cache-control");
         response.setHeader("Access-Control-Expose-Headers", "Cache-Control");
         response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             log.debug("Preflight request detected, returning 200 OK");
