@@ -11,7 +11,6 @@ import lombok.*;
 public class UpdateUserDto {
     @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Email is invalid")
     private String email;
-    private String password;
     private String fullName;
     private String address;
 
