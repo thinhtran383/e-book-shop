@@ -91,9 +91,24 @@ public class OrderController {
         );
     }
 
-    @PutMapping("/confirm/{orderId}")
-    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    @PutMapping("/admin/confirm/{orderId}")
+//    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     public ResponseEntity<Response<OrderResponse>> confirmOrder(
+            @RequestBody ConfirmOrder note,
+            @PathVariable Integer orderId
+    ) {
+        OrderResponse orderResponse = orderService.updateOrderStatus(orderId, "Delivering", note.getNote());
+
+        return ResponseEntity.ok(Response.<OrderResponse>builder()
+                .data(orderResponse)
+                .message("Order confirmed successfully")
+                .build()
+        );
+    }
+
+    @PutMapping("/user/received/{orderId}")
+//    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+    public ResponseEntity<Response<OrderResponse>> receivedOrder(
             @RequestBody ConfirmOrder note,
             @PathVariable Integer orderId
     ) {
