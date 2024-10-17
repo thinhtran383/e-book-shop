@@ -18,6 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -48,7 +49,20 @@ public class UserController {
 
     }
 
+    @GetMapping("/address")
+    public ResponseEntity<Response<Map<String, String>>> getAddressCurrentUser(@AuthenticationPrincipal User user) {
+        Map<String, String> response = Map.of(
+                "address", user.getCustomer().getAddress()
+        );
+
+        return ResponseEntity.ok(Response.<Map<String, String>>builder()
+                .data(response)
+                .message("Success")
+                .build());
+    }
+
     @GetMapping("/export/excel")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void exportCustomerToExcel(HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
 
