@@ -49,7 +49,11 @@ public class OrderService {
         log.error("Order status: {}", order.getStatus());
 
         order.setStatus(status);
-        order.setNote(note);
+
+        if (note != null) {
+            order.setNote(note);
+        }
+
         orderRepository.save(order);
         return OrderResponse.builder()
                 .id(order.getId())
@@ -82,7 +86,11 @@ public class OrderService {
         });
 
         order.setStatus("CANCELLED");
-        order.setNote(note);
+
+        if(note != null) {
+            order.setNote(note);
+        }
+
         orderRepository.save(order);
 
         return OrderResponse.builder()
