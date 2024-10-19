@@ -14,18 +14,17 @@ import java.util.Optional;
 @Repository
 public interface ICommentRepository extends JpaRepository<Comment, Integer> {
     @Query("""
-        select new org.example.bookshop.responses.comment.CommentResponse(
+        select distinct new org.example.bookshop.responses.comment.CommentResponse(
             c.content,
             cu.fullName,
             c.commentDate,
             r.rating
-          
             )
         from Comment c
         join c.bookID b
         join c.userID u
         join u.customer cu
-        left join Rating r on r.bookID = b  
+        join b.ratings r
         where b.id = :bookID
         """)
     Page<CommentResponse> findAllCommentByBookID(Integer bookID, Pageable pageable);
@@ -36,5 +35,5 @@ public interface ICommentRepository extends JpaRepository<Comment, Integer> {
 
     boolean existsByUserID_IdAndBookID_Id(int userId, int bookId);
 
-
+    boolean findByUserID_Id(int userId);
 }
