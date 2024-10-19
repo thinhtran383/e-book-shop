@@ -12,10 +12,12 @@ import org.example.bookshop.repositories.ICategoryRepository;
 import org.example.bookshop.responses.book.BookResponse;
 import org.example.bookshop.specifications.BookSpecification;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -100,6 +102,7 @@ public class BookService {
                 .and(BookSpecification.hasPublisher(publisher))
                 .and(BookSpecification.hasTitle(title));
 
+
         Page<Book> booksPage = bookRepository.findAll(spec, pageable);
 
         List<Integer> bookIds = booksPage.getContent().stream()
@@ -126,7 +129,6 @@ public class BookService {
         return new PageImpl<>(bookResponses, pageable, booksPage.getTotalElements());
     }
 
-
     @Transactional(readOnly = true)
     public BigDecimal getAverageRatingById(Integer bookID) {
         return bookRepository.getAverageRatingById(bookID);
@@ -144,7 +146,7 @@ public class BookService {
                 .author(book.getAuthor())
                 .price(book.getPrice())
                 .quantity(book.getQuantity())
-                .categoryName(book.getCategoryID().getCategoryName())
+                .categoryName(book.getCategoryID() == null ? null : book.getCategoryID().getCategoryName())
                 .description(book.getDescription())
                 .publisher(book.getPublisher())
                 .publishedDate(book.getPublishedDate())
@@ -229,4 +231,6 @@ public class BookService {
     public int getBookQuantity(Integer bookID) {
         return bookRepository.getQuantityById(bookID);
     }
+
+
 }
