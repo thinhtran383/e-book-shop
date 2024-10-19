@@ -13,7 +13,7 @@ public interface IOrderRepository extends JpaRepository<Order, Integer> {
 
     @Query("""
                 select new org.example.bookshop.responses.order.OrderResponse(
-                o.id, c.fullName, u.email, o.totalAmount, o.orderDate, o.status
+                o.id, c.fullName, u.email, o.totalAmount, o.orderDate, o.status, o.note
                 )
                 from Order o
                 join o.userID u
@@ -23,7 +23,7 @@ public interface IOrderRepository extends JpaRepository<Order, Integer> {
 
     @Query("""
                 select new org.example.bookshop.responses.order.OrderResponse(
-                o.id, c.fullName, u.email, o.totalAmount, o.orderDate, o.status
+                o.id, c.fullName, u.email, o.totalAmount, o.orderDate, o.status, o.note
                 )
                 from Order o
                 join o.userID u

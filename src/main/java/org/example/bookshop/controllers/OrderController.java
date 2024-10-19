@@ -92,12 +92,14 @@ public class OrderController {
     }
 
     @PutMapping("/admin/confirm/{orderId}")
-//    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+// @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     public ResponseEntity<Response<OrderResponse>> confirmOrder(
-            @RequestBody ConfirmOrder note,
+            @RequestBody(required = false) ConfirmOrder note,
             @PathVariable Integer orderId
     ) {
-        OrderResponse orderResponse = orderService.updateOrderStatus(orderId, "Delivering", note.getNote());
+        String noteContent = (note != null && note.getNote() != null) ? note.getNote() : null;
+
+        OrderResponse orderResponse = orderService.updateOrderStatus(orderId, "Delivering", noteContent);
 
         return ResponseEntity.ok(Response.<OrderResponse>builder()
                 .data(orderResponse)
@@ -106,13 +108,16 @@ public class OrderController {
         );
     }
 
+
     @PutMapping("/user/received/{orderId}")
 //    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     public ResponseEntity<Response<OrderResponse>> receivedOrder(
-            @RequestBody ConfirmOrder note,
+            @RequestBody(required = false) ConfirmOrder note,
             @PathVariable Integer orderId
     ) {
-        OrderResponse orderResponse = orderService.updateOrderStatus(orderId, "Completed", note.getNote());
+
+        String noteContent = (note != null && note.getNote() != null) ? note.getNote() : null;
+        OrderResponse orderResponse = orderService.updateOrderStatus(orderId, "Completed", noteContent);
 
         return ResponseEntity.ok(Response.<OrderResponse>builder()
                 .data(orderResponse)
@@ -124,7 +129,7 @@ public class OrderController {
     @PutMapping("/cancel/{orderId}")
     @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Response<OrderResponse>> cancelOrder(
-            @RequestBody ConfirmOrder cancelOrder,
+            @RequestBody(required = false) ConfirmOrder cancelOrder,
             @PathVariable Integer orderId
 
     ) {

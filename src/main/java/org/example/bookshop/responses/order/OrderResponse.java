@@ -20,4 +20,5 @@ public class OrderResponse {
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate orderDate;
     private String status;
+    private String note;
 }
