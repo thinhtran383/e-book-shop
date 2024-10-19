@@ -90,12 +90,11 @@ public class CommentService {
             throw new DataNotFoundException("User has not purchased this book");
         }
 
-        commentRepository.findById(commentDto.getUserId()).ifPresent(
-                comment -> {
-                    throw new ResourceAlreadyExisted("User has already commented this book");
-                }
-        );
+        boolean existed = commentRepository.existsByUserID_IdAndBookID_Id(commentDto.getUserId(), commentDto.getBookId());
 
+        if (existed) {
+            throw new ResourceAlreadyExisted("User has commented this book");
+        }
 
         Comment comment = Comment.builder()
                 .commentDate(LocalDateTime.now())
