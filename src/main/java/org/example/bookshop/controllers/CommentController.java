@@ -10,7 +10,7 @@ import org.example.bookshop.responses.Response;
 import org.example.bookshop.responses.comment.CommentResponse;
 import org.example.bookshop.services.BookService;
 import org.example.bookshop.services.CommentService;
-import org.example.bookshop.utils.JwtGenerator;
+import org.example.bookshop.components.JwtGenerator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

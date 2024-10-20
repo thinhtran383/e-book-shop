@@ -68,10 +68,18 @@ public class WebSecurityConfig {
                                             // book
                                             String.format("%s/books/**", apiPrefix),
                                             String.format("%s/books", apiPrefix),
+                                            String.format("%s/books/details/**", apiPrefix),
+                                            String.format("%s/books/publishers", apiPrefix),
 
                                             // category
                                             String.format("%s/categories/**", apiPrefix),
-                                            String.format("%s/categories", apiPrefix)
+                                            String.format("%s/categories", apiPrefix),
+
+                                            // actuator
+                                            "/actuator/**",
+                                            "/actuator",
+                                            "/actuator/health",
+                                            "/actuator/health/**"
 
 
                                     )

@@ -1,11 +1,10 @@
-package org.example.bookshop.utils;
+package org.example.bookshop.components;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import lombok.RequiredArgsConstructor;
 import org.example.bookshop.entities.Role;
 import org.example.bookshop.entities.User;
-import org.example.bookshop.repositories.IUserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;

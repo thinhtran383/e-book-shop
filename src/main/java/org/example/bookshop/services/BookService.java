@@ -10,6 +10,7 @@ import org.example.bookshop.exceptions.DataNotFoundException;
 import org.example.bookshop.repositories.IBookRepository;
 import org.example.bookshop.repositories.ICategoryRepository;
 import org.example.bookshop.responses.book.BookResponse;
+import org.example.bookshop.responses.book.PublisherResponse;
 import org.example.bookshop.specifications.BookSpecification;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -36,6 +37,11 @@ public class BookService {
     @Transactional(readOnly = true)
     public Page<BookResponse> getAllBooks(Pageable pageable) {
         return bookRepository.findAllBook(pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PublisherResponse> getPublishers(Pageable pageable) {
+        return bookRepository.findAllPublisher(pageable);
     }
 
 
@@ -229,6 +235,8 @@ public class BookService {
     public int getBookQuantity(Integer bookID) {
         return bookRepository.getQuantityById(bookID);
     }
+
+
 
 
 }
