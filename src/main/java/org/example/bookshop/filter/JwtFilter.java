@@ -7,12 +7,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.bookshop.entities.User;
-import org.example.bookshop.utils.JwtGenerator;
+import org.example.bookshop.components.JwtGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -32,12 +31,16 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+//        filterChain.doFilter(request, response); // bypass for testing
+
         if (nonAuthRequest(request)) {
             filterChain.doFilter(request, response);
+            log.info("Non-auth request");
             return;
         }
 
         final String authorizationHeader = request.getHeader("Authorization");
+        log.info("Authorization header: {}", authorizationHeader);
 
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -95,9 +98,10 @@ public class JwtFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/payments/ipn/**", apiPrefix), "POST"),
 
                 // book
-                Pair.of(String.format("%s/books/**", apiPrefix), "GET"),
+//                Pair.of(String.format("%s/books/**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/books", apiPrefix), "GET"),
                 Pair.of(String.format("%s/books/details/**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/books/publishers", apiPrefix), "GET"),
 
                 // category
                 Pair.of(String.format("%s/categories/**", apiPrefix), "GET"),
@@ -107,7 +111,13 @@ public class JwtFilter extends OncePerRequestFilter {
                 Pair.of("/home/**", "GET"),
 
                 Pair.of("/home", "POST"),
-                Pair.of("/home/**", "POST")
+                Pair.of("/home/**", "POST"),
+
+                // actuator
+                Pair.of("/actuator/**", "GET"),
+                Pair.of("/actuator", "GET"),
+                Pair.of("/actuator/health", "GET"),
+                Pair.of("/actuator/health/**", "GET")
 
         );
 

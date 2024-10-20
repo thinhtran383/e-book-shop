@@ -3,6 +3,7 @@ package org.example.bookshop.repositories;
 import org.example.bookshop.entities.Book;
 import org.example.bookshop.entities.Category;
 import org.example.bookshop.responses.book.BookResponse;
+import org.example.bookshop.responses.book.PublisherResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,7 +18,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 
-@Repository
 public interface IBookRepository extends JpaRepository<Book, Integer>, JpaSpecificationExecutor<Book> {
 
     @Query("""
@@ -65,4 +65,7 @@ public interface IBookRepository extends JpaRepository<Book, Integer>, JpaSpecif
 
     @Query("select SUM(od.quantity) from OrderDetail od where od.bookID.id = :bookID")
     Long getPurchaseCountByBookID(@Param("bookID") Integer bookID);
+
+    @Query("SELECT distinct new org.example.bookshop.responses.book.PublisherResponse(b.publisher) FROM Book b")
+    Page<PublisherResponse> findAllPublisher(Pageable pageable);
 }

@@ -3,6 +3,7 @@ package org.example.bookshop.controllers;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.annotation.security.PermitAll;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.bookshop.dto.book.BookDto;
@@ -11,6 +12,7 @@ import org.example.bookshop.entities.Book;
 import org.example.bookshop.responses.PageableResponse;
 import org.example.bookshop.responses.Response;
 import org.example.bookshop.responses.book.BookResponse;
+import org.example.bookshop.responses.book.PublisherResponse;
 import org.example.bookshop.services.BookService;
 import org.example.bookshop.services.CloudinaryService;
 import org.springframework.data.domain.Page;
@@ -146,7 +148,7 @@ public class BookController {
     }
 
     @GetMapping()
-    ResponseEntity<Response<PageableResponse<BookResponse>>> filterBooks(
+    public ResponseEntity<Response<PageableResponse<BookResponse>>> filterBooks(
             @RequestParam(required = false) Integer category,
             @RequestParam(required = false) BigDecimal priceMin,
             @RequestParam(required = false) BigDecimal priceMax,
@@ -184,8 +186,8 @@ public class BookController {
     }
 
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/export/excel")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void exportToExcel(HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
 
@@ -210,6 +212,29 @@ public class BookController {
         return ResponseEntity.ok(Response.<BookResponse>builder()
                 .data(bookService.updateBook(updateBookDto))
                 .message("Update book success")
+                .build());
+    }
+
+    @GetMapping("/publishers")
+    public  ResponseEntity<Response<PageableResponse<PublisherResponse>>> getAllPublishers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int limit
+    ) {
+
+
+        Pageable pageable = PageRequest.of(page, limit);
+
+        Page<PublisherResponse> publisherResponses = bookService.getPublishers(pageable);
+
+        PageableResponse<PublisherResponse> response = PageableResponse.<PublisherResponse>builder()
+                .totalPages(publisherResponses.getTotalPages())
+                .totalElements(publisherResponses.getTotalElements())
+                .elements(publisherResponses.getContent())
+                .build();
+
+        return ResponseEntity.ok(Response.<PageableResponse<PublisherResponse>>builder()
+                .data(response)
+                .message("Success")
                 .build());
     }
 }
