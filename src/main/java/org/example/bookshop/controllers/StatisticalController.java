@@ -33,4 +33,28 @@ public class StatisticalController {
                 .message("Success")
                 .build());
     }
+
+    @GetMapping("/total-customers")
+    public ResponseEntity<Response<Long>> getTotalCustomers() {
+        return ResponseEntity.ok(Response.<Long>builder()
+                .data(statisticalService.getTotalCustomers())
+                .message("Success")
+                .build());
+    }
+
+    @GetMapping("/total-orders")
+    public ResponseEntity<Response<Long>> getTotalOrders() {
+        return ResponseEntity.ok(Response.<Long>builder()
+                .data(statisticalService.getTotalOrders())
+                .message("Success")
+                .build());
+    }
+
+    @GetMapping("/total-revenue")
+    public ResponseEntity<Response<String>> getTotalRevenue() {
+        return ResponseEntity.ok(Response.<String>builder()
+                .data(statisticalService.getTotalRevenue().toString())
+                .message("Success")
+                .build());
+    }
 }

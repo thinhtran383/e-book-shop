@@ -1,6 +1,7 @@
 package org.example.bookshop.services;
 
 import lombok.RequiredArgsConstructor;
+import org.example.bookshop.repositories.ICustomerRepository;
 import org.example.bookshop.repositories.IOrderDetailRepository;
 import org.example.bookshop.repositories.IOrderRepository;
 import org.example.bookshop.responses.book.Top5Response;
@@ -16,6 +17,7 @@ import java.util.List;
 public class StatisticalService {
     private final IOrderRepository orderRepository;
     private final IOrderDetailRepository orderDetailRepository;
+    private final ICustomerRepository customerRepository;
 
     @Transactional(readOnly = true)
     public List<Top5Response> getTop5BooksBySales() {
@@ -34,4 +36,21 @@ public class StatisticalService {
             return new MonthlyRevenueResponse(month, year, totalRevenue);
         }).toList();
     }
+
+    @Transactional(readOnly = true)
+    public Long getTotalCustomers() {
+        return customerRepository.count();
+    }
+
+    @Transactional(readOnly = true)
+    public Long getTotalOrders() {
+        return orderRepository.count();
+    }
+
+    @Transactional(readOnly = true)
+    public BigDecimal getTotalRevenue() {
+        return orderRepository.getTotalRevenue();
+    }
+
+
 }

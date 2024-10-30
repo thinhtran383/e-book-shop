@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface IOrderRepository extends JpaRepository<Order, Integer> {
@@ -44,4 +45,10 @@ public interface IOrderRepository extends JpaRepository<Order, Integer> {
             """)
     List<Object[]> getRevenueByMonth();
 
+    @Query("""
+                select sum(o.totalAmount)
+                from Order o
+                where o.status = 'COMPLETED'
+            """)
+    BigDecimal getTotalRevenue();
 }
