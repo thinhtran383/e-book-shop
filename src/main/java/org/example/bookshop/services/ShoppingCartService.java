@@ -33,6 +33,12 @@ public class ShoppingCartService {
 
     @Transactional
     public CartPaymentResponse addToCart(Integer userId, UpdateQuantityDto newItem) {
+        int availableQuantity = bookService.getBookQuantity(newItem.getBookId());
+
+        if (newItem.getNewQuantity() > availableQuantity) {
+            throw new DataNotFoundException("Not enough quantity");
+        }
+
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserIDAndBookID(userId, newItem.getBookId())
                 .orElseGet(() -> {
                     ShoppingCart newCart = new ShoppingCart();
