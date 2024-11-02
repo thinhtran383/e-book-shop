@@ -224,6 +224,10 @@ public class BookService {
             book.setTitle(updateBookDto.getTitle());
         }
 
+        if(updateBookDto.getPrice() != null && updateBookDto.getPrice().compareTo(BigDecimal.ZERO) > 0) {
+            book.setPrice(updateBookDto.getPrice());
+        }
+
 
         book = bookRepository.save(book);
 
