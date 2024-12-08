@@ -15,7 +15,6 @@ import org.example.bookshop.utils.Exporter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -134,25 +133,12 @@ public class BookController {
             @RequestParam(defaultValue = "10") int limit,
             @RequestParam(required = false) String sort
     ) {
-        Sort sorting = Sort.unsorted();
 
-        if (sort != null) {
-            if (sort.equalsIgnoreCase("asc")) {
-                sorting = Sort.by(Sort.Direction.ASC, "price");
-            } else if (sort.equalsIgnoreCase("desc")) {
-                sorting = Sort.by(Sort.Direction.DESC, "price");
-            }
-        }
 
-        Pageable pageable = PageRequest.of(page, limit, sorting);
 
-        Page<BookResponse> bookResponses = bookService.filterBooks(category, priceMin, priceMax, publisher, title, pageable);
 
-        PageableResponse<BookResponse> response = PageableResponse.<BookResponse>builder()
-                .totalPages(bookResponses.getTotalPages())
-                .totalElements(bookResponses.getTotalElements())
-                .elements(bookResponses.getContent())
-                .build();
+        PageableResponse<BookResponse> response = bookService.filterBooks(category, priceMin,
+                priceMax, publisher, title, page, limit);
 
         return ResponseEntity.ok(Response.<PageableResponse<BookResponse>>builder()
                 .data(response)
@@ -171,9 +157,9 @@ public class BookController {
         String headerValue = "attachment; filename=categories.xlsx";
         response.setHeader(headerKey, headerValue);
 
-        Page<BookResponse> bookResponses = bookService.getAllBooks(0, Integer.MAX_VALUE);
+        PageableResponse<BookResponse> bookResponses = bookService.getAllBooks(0, Integer.MAX_VALUE);
 
-        Exporter<BookResponse> exporter = new Exporter<>(bookResponses.getContent(), "Books");
+        Exporter<BookResponse> exporter = new Exporter<>(bookResponses.getElements(), "Books");
 
         exporter.export(response);
 

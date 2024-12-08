@@ -6,6 +6,7 @@ import org.example.bookshop.entities.User;
 import org.example.bookshop.repositories.IUserRepository;
 import org.example.bookshop.responses.users.UserResponse;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "user", key = "#user")
     public User getUserByUsername(String user) {
         return userRepository.findByUsername(user).orElseThrow(() -> new RuntimeException("User not found: " + user));
     }
