@@ -11,10 +11,6 @@ import org.example.bookshop.responses.comment.CommentResponse;
 import org.example.bookshop.services.BookService;
 import org.example.bookshop.services.CommentService;
 import org.example.bookshop.components.JwtGenerator;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -47,15 +43,8 @@ public class CommentController {
             userId = jwtGenerator.extractUserId(bearerToken);
         }
 
-        Pageable pageable = PageRequest.of(page, limit, Sort.by("commentDate").descending());
 
-        Page<CommentResponse> commentResponses = commentService.getCommentByBookId(bookId, pageable);
-
-        PageableResponse<CommentResponse> pageableResponse = PageableResponse.<CommentResponse>builder()
-                .totalPages(commentResponses.getTotalPages())
-                .totalElements(commentResponses.getTotalElements())
-                .elements(commentResponses.getContent())
-                .build();
+        PageableResponse<CommentResponse> pageableResponse = commentService.getCommentByBookId(bookId, page, limit);
 
         BigDecimal averageRating = bookService.getAverageRatingById(bookId);
 

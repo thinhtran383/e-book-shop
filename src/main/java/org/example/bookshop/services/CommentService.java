@@ -12,11 +12,13 @@ import org.example.bookshop.repositories.IBookRepository;
 import org.example.bookshop.repositories.ICommentRepository;
 import org.example.bookshop.repositories.IOrderDetailRepository;
 import org.example.bookshop.repositories.IRatingRepository;
+import org.example.bookshop.responses.PageableResponse;
 import org.example.bookshop.responses.comment.CommentResponse;
 import org.example.bookshop.responses.comment.RatingPercentageResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,10 +38,16 @@ public class CommentService {
     private final IOrderDetailRepository orderDetailRepository;
 
     @Transactional(readOnly = true)
-    public Page<CommentResponse> getCommentByBookId(Integer bookId, Pageable pageable) {
-        Page<CommentResponse> commentResponses = commentRepository.findAllCommentByBookID(bookId, pageable);
+    public PageableResponse<CommentResponse> getCommentByBookId(Integer bookId, int page, int limit) {
+        Page<CommentResponse> commentResponses = commentRepository.findAllCommentByBookID(bookId,
+                PageRequest.of(page, limit, Sort.by("commentDate").descending())
+        );
 
-        return commentResponses;
+        return PageableResponse.<CommentResponse>builder()
+                .totalPages(commentResponses.getTotalPages())
+                .totalElements(commentResponses.getTotalElements())
+                .elements(commentResponses.getContent())
+                .build();
     }
 
     @Transactional(readOnly = true)

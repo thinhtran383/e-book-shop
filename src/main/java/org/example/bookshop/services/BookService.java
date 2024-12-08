@@ -15,7 +15,6 @@ import org.example.bookshop.responses.book.PublisherResponse;
 import org.example.bookshop.specifications.BookSpecification;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -183,7 +182,7 @@ public class BookService {
     }
 
     @Transactional
-    @CachePut(value = "books", key = "#bookID")
+    @CacheEvict(value = "books", allEntries = true)
     public void descQuantity(Integer bookID, Integer quantity) {
         Book book = bookRepository.findById(bookID).orElseThrow(
                 () -> new DataNotFoundException("Book not found")
@@ -195,7 +194,7 @@ public class BookService {
     }
 
     @Transactional
-    @CachePut(value = "books", key = "#bookID")
+    @CacheEvict(value = "books", allEntries = true)
     public void incQuantity(Integer bookID, Integer quantity) {
         Book book = bookRepository.findById(bookID).orElseThrow(
                 () -> new DataNotFoundException("Book not found")
