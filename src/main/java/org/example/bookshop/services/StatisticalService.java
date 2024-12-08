@@ -26,7 +26,7 @@ public class StatisticalService {
 
     @Transactional(readOnly = true)
     public List<MonthlyRevenueResponse> getRevenueByMonth() {
-        List<Object[]> revenueData =  orderRepository.getRevenueByMonth();
+        List<Object[]> revenueData = orderRepository.getRevenueByMonth();
 
         return revenueData.stream().map(data -> {
             Integer month = (Integer) data[0];

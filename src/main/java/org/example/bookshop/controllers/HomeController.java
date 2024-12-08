@@ -37,7 +37,6 @@ public class HomeController {
     public ResponseEntity<Response> userCredentials(Principal principal) {
         return ResponseEntity.ok(Response.builder()
                 .message(principal.getName())
-
                 .build());
     }
 

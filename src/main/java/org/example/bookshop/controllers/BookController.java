@@ -1,30 +1,24 @@
 package org.example.bookshop.controllers;
 
 import io.swagger.v3.oas.annotations.Hidden;
-import jakarta.annotation.security.PermitAll;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.bookshop.dto.book.BookDto;
 import org.example.bookshop.dto.book.UpdateBookDto;
-import org.example.bookshop.entities.Book;
 import org.example.bookshop.responses.PageableResponse;
 import org.example.bookshop.responses.Response;
 import org.example.bookshop.responses.book.BookResponse;
 import org.example.bookshop.responses.book.PublisherResponse;
 import org.example.bookshop.services.BookService;
-import org.example.bookshop.services.CloudinaryService;
+import org.example.bookshop.utils.Exporter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.example.bookshop.utils.Exporter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -34,10 +28,7 @@ import java.math.BigDecimal;
 @RequestMapping("${api.base-path}/books")
 @Slf4j
 public class BookController {
-
     private final BookService bookService;
-    private final CloudinaryService cloudinaryService;
-
 
     @GetMapping("/details/{bookID}")
     public ResponseEntity<Response<BookResponse>> getBookByID(
