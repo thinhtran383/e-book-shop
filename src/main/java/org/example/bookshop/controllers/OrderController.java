@@ -2,7 +2,6 @@ package org.example.bookshop.controllers;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
-import org.example.bookshop.dto.order.CancelOrderDto;
 import org.example.bookshop.dto.order.ConfirmOrder;
 import org.example.bookshop.dto.order.UpdateOrderStatusDto;
 import org.example.bookshop.entities.User;
@@ -17,8 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor

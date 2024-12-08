@@ -52,7 +52,6 @@ public class MailService {
         String htmlTemplate = new String(FileCopyUtils.copyToByteArray(inputStream), StandardCharsets.UTF_8);
 
 
-
         return htmlTemplate.replace("{{newPassword}}", newPassword);
     }
 
