@@ -225,7 +225,7 @@ public class BookService {
             book.setTitle(updateBookDto.getTitle());
         }
 
-        if(updateBookDto.getPrice() != null && updateBookDto.getPrice().compareTo(BigDecimal.ZERO) > 0) {
+        if (updateBookDto.getPrice() != null && updateBookDto.getPrice().compareTo(BigDecimal.ZERO) > 0) {
             book.setPrice(updateBookDto.getPrice());
         }
 
@@ -240,8 +240,6 @@ public class BookService {
     public int getBookQuantity(Integer bookID) {
         return bookRepository.getQuantityById(bookID);
     }
-
-
 
 
 }

@@ -1,7 +1,6 @@
 package org.example.bookshop.services;
 
 import lombok.RequiredArgsConstructor;
-import org.example.bookshop.repositories.IOrderRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

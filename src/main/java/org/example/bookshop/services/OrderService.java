@@ -69,25 +69,17 @@ public class OrderService {
     public OrderResponse cancelOrder(Integer orderId, String note) {
         Order order = orderRepository.findById(orderId).orElseThrow();
 
-        if (order.getStatus().equals("Delivering")) {
-            throw new ResourceAlreadyExisted("Cannot cancel delivering order");
+        switch (order.getStatus()) {
+            case "Delivering" -> throw new ResourceAlreadyExisted("Cannot cancel delivering order");
+            case "CANCELLED" -> throw new ResourceAlreadyExisted("Order already cancelled");
+            case "Completed" -> throw new ResourceAlreadyExisted("Cannot cancel completed order");
         }
 
-        if (order.getStatus().equals("CANCELLED")) {
-            throw new ResourceAlreadyExisted("Order already cancelled");
-        }
-
-        if (order.getStatus().equals("Completed")) {
-            throw new ResourceAlreadyExisted("Cannot cancel completed order");
-        }
-
-        order.getOrderDetails().forEach(orderDetail -> {
-            increaseBookQuantity(orderDetail.getBookID().getId(), orderDetail.getQuantity());
-        });
+        order.getOrderDetails().forEach(orderDetail -> increaseBookQuantity(orderDetail.getBookID().getId(), orderDetail.getQuantity()));
 
         order.setStatus("CANCELLED");
 
-        if(note != null) {
+        if (note != null) {
             order.setNote(note);
         }
 

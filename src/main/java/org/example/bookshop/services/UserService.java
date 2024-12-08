@@ -47,19 +47,19 @@ public class UserService {
     public UserResponse updateUserDetails(Integer userId, UpdateUserDto userDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found: " + userId));
 
-        if(userDto.getEmail() != null) {
+        if (userDto.getEmail() != null) {
             user.setEmail(userDto.getEmail());
         }
 
-        if(userDto.getFullName() != null) {
+        if (userDto.getFullName() != null) {
             user.getCustomer().setFullName(userDto.getFullName());
         }
 
-        if(userDto.getAddress() != null) {
+        if (userDto.getAddress() != null) {
             user.getCustomer().setAddress(userDto.getAddress());
         }
 
-        if(userDto.getPhone() != null) {
+        if (userDto.getPhone() != null) {
             user.getCustomer().setPhone(userDto.getPhone());
         }
 
