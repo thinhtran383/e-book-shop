@@ -37,9 +37,9 @@ public class AuthService {
 
     @Transactional
     public RegisterDto register(RegisterDto registerDto) {
-        User existUser = userRepository.findByUsername(registerDto.getUsername()).orElse(null);
+        User existUser = userRepository.findByUsername(registerDto.getUsername()).orElse(null); // ?? :)
 
-        if (existUser != null) {
+        if (existUser != null) { // ??
             if (existUser.getEmail() != null && existUser.getEmail().equals(registerDto.getEmail())) {
                 throw new ResourceAlreadyExisted("Email already existed");
             }

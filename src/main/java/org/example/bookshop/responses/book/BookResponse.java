@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.example.bookshop.entities.Category;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BookResponse {
+public class BookResponse implements Serializable{
     private Integer id;
 
     @NotNull
@@ -37,7 +37,7 @@ public class BookResponse {
     @Size(max = 255)
     private String publisher;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate publishedDate;
 
     @Size(max = 255)

@@ -15,6 +15,7 @@ import org.example.bookshop.specifications.BookSpecification;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -35,8 +36,8 @@ public class BookService {
     private final ICategoryRepository categoryRepository;
 
     @Transactional(readOnly = true)
-    public Page<BookResponse> getAllBooks(Pageable pageable) {
-        return bookRepository.findAllBook(pageable);
+    public Page<BookResponse> getAllBooks(int page, int size) {
+        return bookRepository.findAllBook(PageRequest.of(page, size));
     }
 
     @Transactional(readOnly = true)
@@ -49,7 +50,7 @@ public class BookService {
     public BookResponse createNewBook(BookDto bookDto) {
         Book book = modelMapper.map(bookDto, Book.class);
 
-        book.setId(null);
+//        book.setId(null);
 
         Category category = categoryRepository.findById(bookDto.getCategoryID())
                 .orElseThrow(() -> new DataNotFoundException("Category not found"));

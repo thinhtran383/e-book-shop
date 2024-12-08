@@ -20,14 +20,6 @@ import java.util.Objects;
 public class CloudinaryService {
     private final Cloudinary cloudinary;
 
-    // destroy image
-    public Mono<Map> destroyImage(String publicId) {
-        return Mono.fromCallable(() -> {
-            Map destroyResult = cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
-            log.info("Destroy image result: {}", destroyResult);
-            return destroyResult;
-        });
-    }
 
     public String upload(MultipartFile file)  {
         try{
@@ -39,28 +31,4 @@ public class CloudinaryService {
         }
     }
 
-    public Mono<Map> uploadFile(MultipartFile multipartFile) {
-        return Mono.fromCallable(() -> {
-            File file = convertToFile(multipartFile);
-            try {
-                Map uploadResult = cloudinary.uploader().upload(file, ObjectUtils.emptyMap());
-                file.delete();
-                String imageUrl = (String) uploadResult.get("url");
-                log.info("Image URL: {}", imageUrl);
-
-                return uploadResult;
-            } catch (IOException e) {
-                throw new RuntimeException("Upload failed", e);
-            }
-        });
-    }
-
-
-    private File convertToFile(MultipartFile multipartFile) throws IOException {
-        File file = new File(Objects.requireNonNull(multipartFile.getOriginalFilename()));
-        try (FileOutputStream fos = new FileOutputStream(file)) {
-            fos.write(multipartFile.getBytes());
-        }
-        return file;
-    }
 }
