@@ -15,8 +15,6 @@ import java.util.List;
 @Builder
 public class BookDto {
     private String title;
-
-
     private String author;
 
     private BigDecimal price;

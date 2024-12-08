@@ -39,21 +39,6 @@ public class BookController {
     private final CloudinaryService cloudinaryService;
 
 
-    @Hidden
-    @PostMapping(value = "/upload", consumes = {"multipart/form-data"})
-    public Mono<ResponseEntity<Response<String>>> uploadImage(
-            @RequestParam("file") MultipartFile file
-    ) {
-
-
-        return cloudinaryService.uploadFile(file)
-                .map(uploadResult -> ResponseEntity.ok(Response.<String>builder()
-                        .data(null)
-                        .message("Upload image success")
-                        .build()));
-
-    }
-
     @GetMapping("/details/{bookID}")
     public ResponseEntity<Response<BookResponse>> getBookByID(
             @PathVariable int bookID
@@ -195,9 +180,7 @@ public class BookController {
         String headerValue = "attachment; filename=categories.xlsx";
         response.setHeader(headerKey, headerValue);
 
-        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
-
-        Page<BookResponse> bookResponses = bookService.getAllBooks(pageable);
+        Page<BookResponse> bookResponses = bookService.getAllBooks(0, Integer.MAX_VALUE);
 
         Exporter<BookResponse> exporter = new Exporter<>(bookResponses.getContent(), "Books");
 
@@ -216,7 +199,7 @@ public class BookController {
     }
 
     @GetMapping("/publishers")
-    public  ResponseEntity<Response<PageableResponse<PublisherResponse>>> getAllPublishers(
+    public ResponseEntity<Response<PageableResponse<PublisherResponse>>> getAllPublishers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int limit
     ) {
