@@ -31,16 +31,8 @@ public class OrderController {
             @RequestParam(defaultValue = "10") int limit,
             @RequestParam(required = false) String status
     ) {
-        PageRequest pageRequest = PageRequest.of(page, limit, Sort.by("orderDate").descending());
 
-        Page<OrderResponse> orderResponsePage = orderService.getAllOrders(pageRequest, status);
-
-        PageableResponse<OrderResponse> response = PageableResponse.<OrderResponse>builder()
-                .totalPages(orderResponsePage.getTotalPages())
-                .totalElements(orderResponsePage.getTotalElements())
-                .elements(orderResponsePage.getContent())
-                .build();
-
+        PageableResponse<OrderResponse> response = orderService.getAllOrders(page, limit, status);
 
         return ResponseEntity.ok(Response.<PageableResponse<OrderResponse>>builder()
                 .data(response)

@@ -5,10 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.bookshop.entities.Order;
 import org.example.bookshop.exceptions.ResourceAlreadyExisted;
 import org.example.bookshop.repositories.IOrderRepository;
+import org.example.bookshop.responses.PageableResponse;
 import org.example.bookshop.responses.order.OrderResponse;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,24 +21,32 @@ public class OrderService {
     private final BookService bookService;
 
     @Transactional(readOnly = true)
-    public Page<OrderResponse> getAllOrders(Pageable pageable, String status) {
-        Page<OrderResponse> orderResponsePage = orderRepository.findAllByOrder(pageable);
+    public PageableResponse<OrderResponse> getAllOrders(int page, int limit, String status) {
+        Page<OrderResponse> orderResponsePage = orderRepository.findAllByOrder(PageRequest.of(page, limit, Sort.by("orderDate").descending()));
 
         if (status != null) {
             List<OrderResponse> filteredOrders = orderResponsePage.getContent()
                     .stream().
                     filter(orderResponse -> orderResponse.getStatus().equals(status))
                     .toList();
-            return new PageImpl<>(filteredOrders, pageable, filteredOrders.size());
+
+            return PageableResponse.<OrderResponse>builder()
+                    .elements(filteredOrders)
+                    .totalElements(filteredOrders.size())
+                    .totalPages(filteredOrders.size() / limit)
+                    .build();
         }
 
-        return orderResponsePage;
+        return PageableResponse.<OrderResponse>builder()
+                .elements(orderResponsePage.getContent())
+                .totalElements(orderResponsePage.getTotalElements())
+                .totalPages(orderResponsePage.getTotalPages())
+                .build();
     }
 
     @Transactional(readOnly = true)
     public Page<OrderResponse> getAllOrdersByUserId(Integer userId, Pageable pageable) {
-        Page<OrderResponse> orderResponsePage = orderRepository.findAllByOrderByUserId(userId, pageable);
-        return orderResponsePage;
+        return orderRepository.findAllByOrderByUserId(userId, pageable);
     }
 
     @Transactional

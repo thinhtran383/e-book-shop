@@ -9,9 +9,6 @@ import org.example.bookshop.responses.Response;
 import org.example.bookshop.responses.category.CategoriesResponse;
 import org.example.bookshop.services.CategoryService;
 import org.example.bookshop.utils.Exporter;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -30,17 +27,8 @@ public class CategoryController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int limit
     ) {
-        Pageable pageable = PageRequest.of(page, limit);
 
-        Page<CategoriesResponse> categoriesResponses = categoryService.getAllCategories(pageable);
-
-        PageableResponse<CategoriesResponse> response = PageableResponse.<CategoriesResponse>builder()
-                .totalPages(categoriesResponses.getTotalPages())
-                .totalElements(categoriesResponses.getTotalElements())
-                .elements(categoriesResponses.getContent())
-                .build();
-
-
+        PageableResponse<CategoriesResponse> response = categoryService.getAllCategories(page, limit);
 
         return ResponseEntity.ok(Response.<PageableResponse<CategoriesResponse>>builder()
                 .data(response)
@@ -58,11 +46,10 @@ public class CategoryController {
         String headerValue = "attachment; filename=categories.xlsx";
         response.setHeader(headerKey, headerValue);
 
-        Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE);
 
-        Page<CategoriesResponse> categoriesResponses = categoryService.getAllCategories(pageable);
+        PageableResponse<CategoriesResponse> categoriesResponses = categoryService.getAllCategories(0, 1000);
 
-        Exporter<CategoriesResponse> exporter = new Exporter<>(categoriesResponses.getContent(), "Categories");
+        Exporter<CategoriesResponse> exporter = new Exporter<>(categoriesResponses.getElements(), "Categories");
 
         exporter.export(response);
 
