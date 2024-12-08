@@ -9,12 +9,15 @@ import org.example.bookshop.entities.Category;
 import org.example.bookshop.exceptions.DataNotFoundException;
 import org.example.bookshop.repositories.IBookRepository;
 import org.example.bookshop.repositories.ICategoryRepository;
+import org.example.bookshop.responses.PageableResponse;
 import org.example.bookshop.responses.book.BookResponse;
 import org.example.bookshop.responses.book.PublisherResponse;
 import org.example.bookshop.specifications.BookSpecification;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -36,8 +39,16 @@ public class BookService {
     private final ICategoryRepository categoryRepository;
 
     @Transactional(readOnly = true)
-    public Page<BookResponse> getAllBooks(int page, int size) {
-        return bookRepository.findAllBook(PageRequest.of(page, size));
+    @Cacheable(value = "books", key = "#page")
+    public PageableResponse<BookResponse> getAllBooks(int page, int size) {
+        Page<BookResponse> bookResponses = bookRepository.findAllBook(PageRequest.of(page, size));
+
+
+        return PageableResponse.<BookResponse>builder()
+                .elements(bookResponses.getContent())
+                .totalPages(bookResponses.getTotalPages())
+                .totalElements(bookResponses.getTotalElements())
+                .build();
     }
 
     @Transactional(readOnly = true)
@@ -47,6 +58,7 @@ public class BookService {
 
 
     @Transactional
+    @CacheEvict(value = "books", allEntries = true)
     public BookResponse createNewBook(BookDto bookDto) {
         Book book = modelMapper.map(bookDto, Book.class);
 
@@ -91,6 +103,7 @@ public class BookService {
     }
 
     @Transactional
+    @CacheEvict(value = "books", allEntries = true)
     public BookResponse deleteBook(Integer bookID) {
         Book book = bookRepository.findById(bookID).orElseThrow();
 
@@ -100,12 +113,16 @@ public class BookService {
     }
 
     @Transactional(readOnly = true)
-    public Page<BookResponse> filterBooks(Integer category, BigDecimal priceMin, BigDecimal priceMax, String publisher, String title, Pageable pageable) {
+    @Cacheable(value = "books", key = "#category + '-' + #priceMin + '-' + #priceMax + '-' + #publisher + '-' + #title + '-' + #page + '-' + #limit")
+    public PageableResponse<BookResponse> filterBooks(Integer category, BigDecimal priceMin,
+                                                      BigDecimal priceMax, String publisher, String title, int page, int limit) {
         Specification<Book> spec = Specification.where(BookSpecification.hasCategory(category))
                 .and(BookSpecification.hasPriceGreaterThan(priceMin))
                 .and(BookSpecification.hasPriceLessThan(priceMax))
                 .and(BookSpecification.hasPublisher(publisher))
                 .and(BookSpecification.hasTitle(title));
+
+        Pageable pageable = PageRequest.of(page, limit);
 
 
         Page<Book> booksPage = bookRepository.findAll(spec, pageable);
@@ -131,7 +148,11 @@ public class BookService {
                 })
                 .toList();
 
-        return new PageImpl<>(bookResponses, pageable, booksPage.getTotalElements());
+        return PageableResponse.<BookResponse>builder()
+                .elements(bookResponses)
+                .totalPages(booksPage.getTotalPages())
+                .totalElements(booksPage.getTotalElements())
+                .build();
     }
 
     @Transactional(readOnly = true)
@@ -162,6 +183,7 @@ public class BookService {
     }
 
     @Transactional
+    @CachePut(value = "books", key = "#bookID")
     public void descQuantity(Integer bookID, Integer quantity) {
         Book book = bookRepository.findById(bookID).orElseThrow(
                 () -> new DataNotFoundException("Book not found")
@@ -173,6 +195,7 @@ public class BookService {
     }
 
     @Transactional
+    @CachePut(value = "books", key = "#bookID")
     public void incQuantity(Integer bookID, Integer quantity) {
         Book book = bookRepository.findById(bookID).orElseThrow(
                 () -> new DataNotFoundException("Book not found")
@@ -184,6 +207,7 @@ public class BookService {
     }
 
     @Transactional
+    @CacheEvict(value = "books", allEntries = true)
     public BookResponse updateBook(UpdateBookDto updateBookDto) {
         Book book = bookRepository.findById(updateBookDto.getId()).orElseThrow(
                 () -> new DataNotFoundException("Book not found")
