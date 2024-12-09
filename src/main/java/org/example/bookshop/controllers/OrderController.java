@@ -9,9 +9,6 @@ import org.example.bookshop.responses.PageableResponse;
 import org.example.bookshop.responses.Response;
 import org.example.bookshop.responses.order.OrderResponse;
 import org.example.bookshop.services.OrderService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -47,15 +44,8 @@ public class OrderController {
             @RequestParam(defaultValue = "10") int limit,
             @AuthenticationPrincipal User userDetails
     ) {
-        PageRequest pageRequest = PageRequest.of(page, limit, Sort.by("orderDate").descending());
 
-        Page<OrderResponse> orderResponsePage = orderService.getAllOrdersByUserId(userDetails.getId(), pageRequest);
-
-        PageableResponse<OrderResponse> response = PageableResponse.<OrderResponse>builder()
-                .totalPages(orderResponsePage.getTotalPages())
-                .totalElements(orderResponsePage.getTotalElements())
-                .elements(orderResponsePage.getContent())
-                .build();
+        PageableResponse<OrderResponse> response = orderService.getAllOrdersByUserId(userDetails.getId(), page, limit);
 
         return ResponseEntity.ok(Response.<PageableResponse<OrderResponse>>builder()
                 .data(response)
