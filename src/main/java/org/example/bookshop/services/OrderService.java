@@ -7,6 +7,7 @@ import org.example.bookshop.exceptions.ResourceAlreadyExisted;
 import org.example.bookshop.repositories.IOrderRepository;
 import org.example.bookshop.responses.PageableResponse;
 import org.example.bookshop.responses.order.OrderResponse;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ public class OrderService {
     private final BookService bookService;
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "orders", key = "#page + '-' + #status")
     public PageableResponse<OrderResponse> getAllOrders(int page, int limit, String status) {
         Page<OrderResponse> orderResponsePage = orderRepository.findAllByOrder(PageRequest.of(page, limit, Sort.by("orderDate").descending()));
 
@@ -45,8 +47,16 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public Page<OrderResponse> getAllOrdersByUserId(Integer userId, Pageable pageable) {
-        return orderRepository.findAllByOrderByUserId(userId, pageable);
+    public PageableResponse<OrderResponse> getAllOrdersByUserId(Integer userId, int page, int limit) {
+        Page<OrderResponse> orderResponses = orderRepository.findAllByOrderByUserId(userId,
+                PageRequest.of(page, limit, Sort.by("orderDate").descending())
+        );
+
+        return PageableResponse.<OrderResponse>builder()
+                .elements(orderResponses.getContent())
+                .totalElements(orderResponses.getTotalElements())
+                .totalPages(orderResponses.getTotalPages())
+                .build();
     }
 
     @Transactional
