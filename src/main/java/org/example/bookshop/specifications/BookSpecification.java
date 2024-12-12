@@ -1,6 +1,6 @@
 package org.example.bookshop.specifications;
 
-import org.example.bookshop.entities.Book;
+import org.example.bookshop.domain.database.Book;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;

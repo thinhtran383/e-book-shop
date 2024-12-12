@@ -1,4 +1,4 @@
-package org.example.bookshop.entities;
+package org.example.bookshop.domain.database;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

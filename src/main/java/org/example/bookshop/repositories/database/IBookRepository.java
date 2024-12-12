@@ -1,7 +1,7 @@
-package org.example.bookshop.repositories;
+package org.example.bookshop.repositories.database;
 
-import org.example.bookshop.entities.Book;
-import org.example.bookshop.entities.Category;
+import org.example.bookshop.domain.database.Book;
+import org.example.bookshop.domain.database.Category;
 import org.example.bookshop.responses.book.BookResponse;
 import org.example.bookshop.responses.book.PublisherResponse;
 import org.springframework.data.domain.Page;
@@ -12,7 +12,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -33,7 +32,8 @@ public interface IBookRepository extends JpaRepository<Book, Integer>, JpaSpecif
                  b.publisher,
                  b.publishedDate,
                  b.image,
-                 b.averageRating
+                 b.averageRating,
+                 b.categoryID.id
                  )
                 From Book b
             """)

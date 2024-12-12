@@ -1,6 +1,6 @@
-package org.example.bookshop.repositories;
+package org.example.bookshop.repositories.database;
 
-import org.example.bookshop.entities.Order;
+import org.example.bookshop.domain.database.Order;
 import org.example.bookshop.responses.order.OrderResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

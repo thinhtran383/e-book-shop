@@ -1,6 +1,6 @@
-package org.example.bookshop.repositories;
+package org.example.bookshop.repositories.database;
 
-import org.example.bookshop.entities.Rating;
+import org.example.bookshop.domain.database.Rating;
 import org.example.bookshop.responses.comment.RatingPercentageResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

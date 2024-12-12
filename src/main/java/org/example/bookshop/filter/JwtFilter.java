@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.bookshop.entities.User;
+import org.example.bookshop.domain.database.User;
 import org.example.bookshop.components.JwtGenerator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.util.Pair;

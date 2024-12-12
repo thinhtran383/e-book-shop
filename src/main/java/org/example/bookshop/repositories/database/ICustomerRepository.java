@@ -1,7 +1,7 @@
-package org.example.bookshop.repositories;
+package org.example.bookshop.repositories.database;
 
-import org.example.bookshop.entities.Customer;
-import org.example.bookshop.entities.User;
+import org.example.bookshop.domain.database.Customer;
+import org.example.bookshop.domain.database.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,13 +1,11 @@
-package org.example.bookshop.entities;
+package org.example.bookshop.domain.database;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.cglib.core.Local;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Getter
@@ -16,10 +14,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Comments", schema = "book_shop")
-public class Comment {
+@Table(name = "Ratings", schema = "book_shop")
+public class Rating {
     @Id
-    @Column(name = "CommentID", nullable = false)
+    @Column(name = "RatingID", nullable = false)
     private Integer id;
 
     @NotNull
@@ -35,13 +33,12 @@ public class Comment {
     private Book bookID;
 
     @NotNull
-    @Lob
-    @Column(name = "Content", nullable = false)
-    private String content;
+    @Column(name = "Rating", nullable = false)
+    private Integer rating;
 
     @NotNull
-    @Column(name = "CommentDate", nullable = false)
-    private LocalDateTime commentDate;
+    @Column(name = "RatingDate", nullable = false)
+    private LocalDateTime ratingDate;
 
     @PrePersist
     public void prePersist() {

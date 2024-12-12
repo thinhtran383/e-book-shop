@@ -3,7 +3,7 @@ package org.example.bookshop.controllers;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.bookshop.dto.user.UpdateUserDto;
-import org.example.bookshop.entities.User;
+import org.example.bookshop.domain.database.User;
 import org.example.bookshop.responses.PageableResponse;
 import org.example.bookshop.responses.Response;
 import org.example.bookshop.responses.users.UserResponse;

@@ -1,8 +1,8 @@
 package org.example.bookshop.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.example.bookshop.domain.database.User;
 import org.example.bookshop.dto.cart.UpdateQuantityDto;
-import org.example.bookshop.entities.User;
 import org.example.bookshop.responses.Response;
 import org.example.bookshop.responses.cart.CartPaymentResponse;
 import org.example.bookshop.services.ShoppingCartService;

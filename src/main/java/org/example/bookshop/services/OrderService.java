@@ -2,9 +2,9 @@ package org.example.bookshop.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.bookshop.entities.Order;
+import org.example.bookshop.domain.database.Order;
 import org.example.bookshop.exceptions.ResourceAlreadyExisted;
-import org.example.bookshop.repositories.IOrderRepository;
+import org.example.bookshop.repositories.database.IOrderRepository;
 import org.example.bookshop.responses.PageableResponse;
 import org.example.bookshop.responses.order.OrderResponse;
 import org.springframework.cache.annotation.Cacheable;

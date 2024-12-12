@@ -1,6 +1,6 @@
-package org.example.bookshop.repositories;
+package org.example.bookshop.repositories.database;
 
-import org.example.bookshop.entities.OrderDetail;
+import org.example.bookshop.domain.database.OrderDetail;
 import org.example.bookshop.responses.book.Top5Response;
 import org.example.bookshop.responses.order.OrderDetailsResponse;
 import org.springframework.data.jpa.repository.JpaRepository;

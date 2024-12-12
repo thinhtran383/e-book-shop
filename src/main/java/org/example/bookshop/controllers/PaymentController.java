@@ -2,7 +2,7 @@ package org.example.bookshop.controllers;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
-import org.example.bookshop.entities.User;
+import org.example.bookshop.domain.database.User;
 import org.example.bookshop.responses.Response;
 import org.example.bookshop.responses.cart.CartPaymentResponse;
 import org.example.bookshop.services.PaymentService;

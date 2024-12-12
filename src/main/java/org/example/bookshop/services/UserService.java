@@ -2,8 +2,8 @@ package org.example.bookshop.services;
 
 import lombok.RequiredArgsConstructor;
 import org.example.bookshop.dto.user.UpdateUserDto;
-import org.example.bookshop.entities.User;
-import org.example.bookshop.repositories.IUserRepository;
+import org.example.bookshop.domain.database.User;
+import org.example.bookshop.repositories.database.IUserRepository;
 import org.example.bookshop.responses.users.UserResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.Cacheable;
