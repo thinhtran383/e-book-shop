@@ -1,6 +1,6 @@
-package org.example.bookshop.repositories;
+package org.example.bookshop.repositories.database;
 
-import org.example.bookshop.entities.ShoppingCart;
+import org.example.bookshop.domain.database.ShoppingCart;
 import org.example.bookshop.responses.cart.CartResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

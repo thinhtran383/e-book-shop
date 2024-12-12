@@ -1,9 +1,9 @@
 package org.example.bookshop.services;
 
 import lombok.RequiredArgsConstructor;
-import org.example.bookshop.repositories.ICustomerRepository;
-import org.example.bookshop.repositories.IOrderDetailRepository;
-import org.example.bookshop.repositories.IOrderRepository;
+import org.example.bookshop.repositories.database.ICustomerRepository;
+import org.example.bookshop.repositories.database.IOrderDetailRepository;
+import org.example.bookshop.repositories.database.IOrderRepository;
 import org.example.bookshop.responses.book.Top5Response;
 import org.example.bookshop.responses.statistical.MonthlyRevenueResponse;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,7 @@
 package org.example.bookshop.responses.book;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @ToString
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BookResponse {
     private Integer id;
 
@@ -46,8 +48,11 @@ public class BookResponse {
     private BigDecimal averageRating;
 
     private Long purchaseCount;
+    private Integer categoryId;
 
-    public BookResponse(Integer id, String title, String author, BigDecimal price, Integer quantity, String categoryName, String description, String publisher, LocalDate publishedDate, String image, BigDecimal averageRating) {
+    public BookResponse(Integer id, String title, String author, BigDecimal price,
+                        Integer quantity, String categoryName, String description,
+                        String publisher, LocalDate publishedDate, String image, BigDecimal averageRating, Integer categoryId) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -59,5 +64,6 @@ public class BookResponse {
         this.publishedDate = publishedDate;
         this.image = image;
         this.averageRating = averageRating;
+        this.categoryId = categoryId;
     }
 }

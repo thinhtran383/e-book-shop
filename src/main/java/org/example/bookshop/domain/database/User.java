@@ -1,4 +1,4 @@
-package org.example.bookshop.entities;
+package org.example.bookshop.domain.database;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

@@ -1,4 +1,4 @@
-package org.example.bookshop.entities;
+package org.example.bookshop.domain.database;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -6,7 +6,6 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Getter
@@ -15,10 +14,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Ratings", schema = "book_shop")
-public class Rating {
+@Table(name = "Comments", schema = "book_shop")
+public class Comment {
     @Id
-    @Column(name = "RatingID", nullable = false)
+    @Column(name = "CommentID", nullable = false)
     private Integer id;
 
     @NotNull
@@ -34,12 +33,13 @@ public class Rating {
     private Book bookID;
 
     @NotNull
-    @Column(name = "Rating", nullable = false)
-    private Integer rating;
+    @Lob
+    @Column(name = "Content", nullable = false)
+    private String content;
 
     @NotNull
-    @Column(name = "RatingDate", nullable = false)
-    private LocalDateTime ratingDate;
+    @Column(name = "CommentDate", nullable = false)
+    private LocalDateTime commentDate;
 
     @PrePersist
     public void prePersist() {

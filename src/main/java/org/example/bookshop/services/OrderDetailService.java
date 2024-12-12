@@ -2,7 +2,7 @@ package org.example.bookshop.services;
 
 import lombok.RequiredArgsConstructor;
 import org.example.bookshop.exceptions.DataNotFoundException;
-import org.example.bookshop.repositories.IOrderDetailRepository;
+import org.example.bookshop.repositories.database.IOrderDetailRepository;
 import org.example.bookshop.responses.order.OrderDetailsResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

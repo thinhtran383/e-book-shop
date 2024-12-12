@@ -2,12 +2,12 @@ package org.example.bookshop.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.bookshop.domain.database.*;
 import org.example.bookshop.dto.cart.UpdateQuantityDto;
-import org.example.bookshop.entities.*;
 import org.example.bookshop.exceptions.DataNotFoundException;
-import org.example.bookshop.repositories.IOrderDetailRepository;
-import org.example.bookshop.repositories.IOrderRepository;
-import org.example.bookshop.repositories.IShoppingCartRepository;
+import org.example.bookshop.repositories.database.IOrderDetailRepository;
+import org.example.bookshop.repositories.database.IOrderRepository;
+import org.example.bookshop.repositories.database.IShoppingCartRepository;
 import org.example.bookshop.responses.cart.CartPaymentResponse;
 import org.example.bookshop.responses.cart.CartResponse;
 import org.springframework.stereotype.Service;
