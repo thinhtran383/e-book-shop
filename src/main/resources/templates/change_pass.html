@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt lại mật khẩu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f6f6f6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: auto;
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #555;
+            line-height: 1.6;
+            margin: 15px 0;
+        }
+        .password {
+            font-weight: bold;
+            color: #007bff;
+            font-size: 18px;
+            margin: 15px 0;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Đặt lại mật khẩu</h2>
+    <p>Xin chào,</p>
+    <p>Bạn đã yêu cầu đặt lại mật khẩu cho tài khoản của mình. Mật khẩu mới của bạn là:</p>
+    <div class="password">
+        <b th:text = "${newPassword}"></b>
+
+    </div>
+    <p>Xin vui lòng lưu ý mật khẩu mới của bạn. Và hãy thay đổi sau khi đăng nhập bằng mật khẩu mới.</p>
+    <p>Trân trọng,</p>
+    <p>Đội ngũ hỗ trợ của chúng tôi</p>
+    <div class="footer">
+        <p>&copy; 2024 Công ty của bạn. Tất cả quyền được bảo lưu.</p>
+    </div>
+</div>
+</body>
+</html>

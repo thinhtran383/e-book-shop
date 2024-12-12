@@ -1,5 +1,6 @@
 package org.example.bookshop.services;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.bookshop.dto.mail.MailDto;
@@ -22,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -150,7 +152,7 @@ public class AuthService {
     }
 
     @Transactional
-    public void forgotPassword(String email) {
+    public void forgotPassword(String email) throws MessagingException {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new DataNotFoundException("Email not found"));
 
 
@@ -160,7 +162,7 @@ public class AuthService {
 
         MailDto mailDto = MailDto.builder()
                 .subject("Forgot password")
-                .message(newPassword)
+                .placeholders(Map.of("newPassword", newPassword))
                 .to(user.getEmail())
                 .build();
 
