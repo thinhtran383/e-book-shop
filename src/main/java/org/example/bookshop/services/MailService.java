@@ -1,22 +1,18 @@
 package org.example.bookshop.services;
 
-import jakarta.annotation.PreDestroy;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.example.bookshop.dto.mail.MailDto;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FileCopyUtils;
+import org.thymeleaf.spring6.SpringTemplateEngine;
+import org.thymeleaf.context.Context;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -25,38 +21,32 @@ public class MailService {
     private String fromMail;
 
     private final JavaMailSender mailSender;
-    private final ExecutorService executorService = Executors.newFixedThreadPool(2);
+    private final SpringTemplateEngine templateEngine;
 
-    public void sendMail(MailDto mailStructure) {
-        executorService.submit(() -> {
-            try {
-                MimeMessage mimeMessage = mailSender.createMimeMessage();
-                MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-                helper.setFrom(fromMail);
-                helper.setTo(mailStructure.getTo());
-                helper.setSubject(mailStructure.getSubject());
+    @Async
+    public void sendMail(MailDto mailDto) throws MessagingException {
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+        helper.setFrom(fromMail);
+        helper.setTo(mailDto.getTo());
+        helper.setSubject(mailDto.getSubject());
 
-                String htmlContent = getHtmlContent(mailStructure.getMessage());
-                helper.setText(htmlContent, true);
+        String htmlContent = generateHtmlContent(mailDto.getTemplateName(), mailDto.getPlaceholders());
+        helper.setText(htmlContent, true);
 
-                mailSender.send(mimeMessage);
-            } catch (IOException | MessagingException e) {
-                e.printStackTrace();
-            }
-        });
+        mailSender.send(mimeMessage);
     }
 
-    private String getHtmlContent(String newPassword) throws IOException {
-        ClassPathResource resource = new ClassPathResource("template/index.html");
-        InputStream inputStream = resource.getInputStream();
-        String htmlTemplate = new String(FileCopyUtils.copyToByteArray(inputStream), StandardCharsets.UTF_8);
+    private String generateHtmlContent(String templateName, Map<String, Object> placeholders) {
+        Context context = new Context();
+
+        if (placeholders == null) {
+            return templateEngine.process(templateName, context);
+        }
+
+        placeholders.forEach(context::setVariable);
 
 
-        return htmlTemplate.replace("{{newPassword}}", newPassword);
-    }
-
-    @PreDestroy
-    public void shutdown() {
-        executorService.shutdown();
+        return templateEngine.process(templateName, context);
     }
 }

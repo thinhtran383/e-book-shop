@@ -1,6 +1,7 @@
 package org.example.bookshop.controllers;
 
 import io.swagger.v3.oas.annotations.Hidden;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
@@ -72,7 +73,7 @@ public class AuthController {
     @PostMapping("/forgot-password")
     public ResponseEntity<Response<?>> forgotPassword(
             @RequestParam @Email @Valid String email
-    ) {
+    ) throws MessagingException {
         authService.forgotPassword(email);
 
         return ResponseEntity.ok(Response.builder()

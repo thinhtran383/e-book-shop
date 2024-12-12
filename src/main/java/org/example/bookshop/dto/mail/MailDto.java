@@ -2,6 +2,8 @@ package org.example.bookshop.dto.mail;
 
 import lombok.*;
 
+import java.util.Map;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -9,6 +11,8 @@ import lombok.*;
 @Builder
 public class MailDto {
     private String subject;
-    private String message;
     private String to;
+
+    private Map<String, Object> placeholders;
+    private String templateName;
 }
