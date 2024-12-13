@@ -9,8 +9,9 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class LoginResponse {
-    private String token;
-    public String username;
+    private String accessToken;
+    private String refreshToken;
+    private String username;
     private String fullName;
     private String email;
     private String address;
