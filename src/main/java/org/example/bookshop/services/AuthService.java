@@ -1,6 +1,7 @@
 package org.example.bookshop.services;
 
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.bookshop.dto.mail.MailDto;
@@ -15,6 +16,7 @@ import org.example.bookshop.exceptions.ResourceAlreadyExisted;
 import org.example.bookshop.repositories.database.IUserRepository;
 import org.example.bookshop.responses.users.LoginResponse;
 import org.example.bookshop.components.JwtGenerator;
+import org.example.bookshop.responses.users.RefreshTokenResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -36,6 +38,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtGenerator jwtGenerator;
     private final MailService mailService;
+    private final TokenService tokenService;
 
 
     @Transactional
@@ -112,10 +115,13 @@ public class AuthService {
 
         authenticationManager.authenticate(authenticationToken);
 
-        String token = jwtGenerator.generateToken(user);
+        String token = jwtGenerator.generateAccessToken(user);
+
+        tokenService.saveAccessToken(token);
 
         return LoginResponse.builder()
-                .token(token)
+                .accessToken(token)
+                .refreshToken(jwtGenerator.generateRefreshToken(user))
                 .username(user.getUsername())
                 .fullName(customer.getFullName())
                 .email(user.getEmail())
@@ -141,7 +147,8 @@ public class AuthService {
 
 
         return LoginResponse.builder()
-                .token(jwtGenerator.generateToken(user))
+                .accessToken(jwtGenerator.generateAccessToken(user))
+                .refreshToken(jwtGenerator.generateRefreshToken(user))
                 .phone(user.getCustomer().getPhone())
                 .address(user.getCustomer().getAddress())
                 .username(user.getUsername())
@@ -167,6 +174,26 @@ public class AuthService {
                 .build();
 
         mailService.sendMail(mailDto);
+    }
+
+    public RefreshTokenResponse refreshToken(HttpServletRequest request) {
+        String refreshToken = request.getHeader("Refresh-Token");
+
+        if (refreshToken == null) {
+            throw new BadCredentialsException("Refresh token not found");
+        }
+
+        if (jwtGenerator.isInValidToken(refreshToken) || jwtGenerator.isExpiredToken(refreshToken)) {
+            throw new BadCredentialsException("Invalid token");
+        }
+
+        User user = userRepository.findById(jwtGenerator.extractUserId(refreshToken))
+                .orElseThrow(() -> new DataNotFoundException("User not found"));
+
+        return RefreshTokenResponse.builder()
+                .accessToken(jwtGenerator.generateAccessToken(user))
+                .refreshToken(jwtGenerator.generateRefreshToken(user))
+                .build();
     }
 
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -17,7 +18,13 @@ public class JwtGenerator {
 
     @Value("${jwt.secret.key}")
     private String secretKey;
-    public String generateToken(User user) {
+
+    @Value("${jwt.expiration.time}")
+    private long expirationTime;
+
+
+
+    public String generateAccessToken(User user) {
         List<String> roles = user.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .toList();
@@ -26,9 +33,18 @@ public class JwtGenerator {
                 .withSubject(user.getUsername())
                 .withClaim("roles", roles)
                 .withClaim("userId", user.getId())
+                .withExpiresAt(new Date(System.currentTimeMillis() + expirationTime))
                 .sign(Algorithm.HMAC256(secretKey));
 
         return token;
+    }
+
+    public String generateRefreshToken(User user) {
+        return JWT.create()
+                .withSubject(user.getUsername())
+                .withClaim("userId", user.getId())
+                .withExpiresAt(new Date(System.currentTimeMillis() + expirationTime * 7))
+                .sign(Algorithm.HMAC256(secretKey));
     }
 
     public String extractUsername(String token) {
@@ -36,6 +52,25 @@ public class JwtGenerator {
                 .build()
                 .verify(token)
                 .getSubject();
+    }
+
+    public boolean isInValidToken(String token) {
+        try {
+            JWT.require(Algorithm.HMAC256(secretKey))
+                    .build()
+                    .verify(token);
+            return false;
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
+    public boolean isExpiredToken(String token) {
+        return JWT.require(Algorithm.HMAC256(secretKey))
+                .build()
+                .verify(token)
+                .getExpiresAt()
+                .before(new Date());
     }
 
     public int extractUserId(String token) {
@@ -53,4 +88,6 @@ public class JwtGenerator {
                 .getClaim("roles")
                 .asList(Role.class);
     }
+
+
 }
