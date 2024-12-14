@@ -19,9 +19,6 @@ public class JwtGenerator {
     @Value("${jwt.secret.key}")
     private String secretKey;
 
-    @Value("${jwt.secret.key.refresh}")
-    private String secretKeyRefresh;
-
     @Value("${jwt.expiration.time}")
     private long expirationTime;
 
@@ -47,7 +44,7 @@ public class JwtGenerator {
                 .withSubject(user.getUsername())
                 .withClaim("userId", user.getId())
                 .withExpiresAt(new Date(System.currentTimeMillis() + expirationTime * 7))
-                .sign(Algorithm.HMAC256(secretKeyRefresh));
+                .sign(Algorithm.HMAC256(secretKey));
     }
 
     public String extractUsername(String token) {
@@ -57,15 +54,23 @@ public class JwtGenerator {
                 .getSubject();
     }
 
-    public boolean isValidToken(String token) {
+    public boolean isInValidToken(String token) {
         try {
             JWT.require(Algorithm.HMAC256(secretKey))
                     .build()
                     .verify(token);
-            return true;
-        } catch (Exception e) {
             return false;
+        } catch (Exception e) {
+            return true;
         }
+    }
+
+    public boolean isExpiredToken(String token) {
+        return JWT.require(Algorithm.HMAC256(secretKey))
+                .build()
+                .verify(token)
+                .getExpiresAt()
+                .before(new Date());
     }
 
     public int extractUserId(String token) {

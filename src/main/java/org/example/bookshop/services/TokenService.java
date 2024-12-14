@@ -24,7 +24,7 @@ public class TokenService {
 
     public boolean isTokenExpired(String token) {
         String key = ACCESS_TOKEN_PREFIX + token;
-        return redisTemplate.hasKey(key);
+        return !redisTemplate.hasKey(key);
     }
 
     public void deleteAccessToken(String token) {

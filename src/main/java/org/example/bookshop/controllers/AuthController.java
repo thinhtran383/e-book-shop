@@ -2,6 +2,7 @@ package org.example.bookshop.controllers;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.example.bookshop.dto.user.LoginDto;
 import org.example.bookshop.dto.user.RegisterDto;
 import org.example.bookshop.responses.Response;
 import org.example.bookshop.responses.users.LoginResponse;
+import org.example.bookshop.responses.users.RefreshTokenResponse;
 import org.example.bookshop.services.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -81,6 +83,12 @@ public class AuthController {
                 .build());
     }
 
-
+    @PostMapping("/refresh-token")
+    public ResponseEntity<Response<RefreshTokenResponse>> refreshToken(HttpServletRequest request){
+        return ResponseEntity.ok(Response.<RefreshTokenResponse>builder()
+                .data(authService.refreshToken(request))
+                .message("Token refreshed successfully")
+                .build());
+    }
 
 }

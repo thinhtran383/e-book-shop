@@ -183,6 +183,9 @@ public class AuthService {
             throw new BadCredentialsException("Refresh token not found");
         }
 
+        if (jwtGenerator.isInValidToken(refreshToken) || jwtGenerator.isExpiredToken(refreshToken)) {
+            throw new BadCredentialsException("Invalid token");
+        }
 
         User user = userRepository.findById(jwtGenerator.extractUserId(refreshToken))
                 .orElseThrow(() -> new DataNotFoundException("User not found"));

@@ -64,11 +64,51 @@ public class JwtFilter extends OncePerRequestFilter {
         final List<Pair<String, String>> nonAuthEndpoints = List.of(
                 Pair.of("/swagger-ui", "GET"),
                 Pair.of("/v3/api-docs/**", "GET"),
+                Pair.of("/v3/api-docs", "GET"),
+                Pair.of("/swagger-resources", "GET"),
                 Pair.of("/swagger-resources/**", "GET"),
+                Pair.of("/configuration/ui", "GET"),
+                Pair.of("/configuration/security", "GET"),
+                Pair.of("/swagger-ui/**", "GET"),
+                Pair.of("/swagger-ui.html", "GET"),
+                Pair.of("/swagger-ui/index.html", "GET"),
+
+                // login
                 Pair.of(String.format("%s/auth/login", apiPrefix), "POST"),
+                Pair.of(String.format("%s/auth/register", apiPrefix), "POST"),
+                Pair.of(String.format("%s/auth/admin", apiPrefix), "POST"),
+                Pair.of(String.format("%s/auth/forgot-password", apiPrefix), "POST"),
+                Pair.of(String.format("%s/auth/refresh-token", apiPrefix), "POST"),
+
+                // comment
+                Pair.of(String.format("%s/comments/**", apiPrefix), "GET"),
+
+                Pair.of(String.format("%s/payments/ipn/**", apiPrefix), "POST"),
+
+                // book
+//                Pair.of(String.format("%s/books/**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/books", apiPrefix), "GET"),
                 Pair.of(String.format("%s/books/details/**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/books/publishers", apiPrefix), "GET"),
+
+                // category
+                Pair.of(String.format("%s/categories/**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/categories", apiPrefix), "GET"),
+
+                Pair.of("/home", "GET"),
+                Pair.of("/home/**", "GET"),
+
+                Pair.of("/home", "POST"),
+                Pair.of("/home/**", "POST"),
+
+                // actuator
+                Pair.of("/actuator/**", "GET"),
+                Pair.of("/actuator", "GET"),
+                Pair.of("/actuator/health", "GET"),
                 Pair.of("/actuator/health/**", "GET")
+
         );
+
 
         String requestPath = request.getServletPath();
         String requestMethod = request.getMethod();
@@ -88,17 +128,18 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private boolean validateToken(String token, HttpServletResponse response) throws IOException {
+        if (jwtGenerator.isInValidToken(token)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Invalid token.");
+            return false;
+        }
+
         if (tokenService.isTokenExpired(token)) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Token is expired.");
             return false;
         }
 
-        if (!jwtGenerator.isValidToken(token)) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Invalid token.");
-            return false;
-        }
         return true;
     }
 
